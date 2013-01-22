@@ -1,0 +1,7 @@
+.idea/*
+config/keys/*
+!config/keys/empty
+node_modules/*
+.DS_Store
+*.log
+*.xml
