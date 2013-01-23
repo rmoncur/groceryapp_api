@@ -1,14 +1,28 @@
+
+#Require Mongoose so that we can use schemas
 mongoose = require 'mongoose'
 Schema = mongoose.Schema
 
+# This is the constructor for the User Schema
+# Every function inside of this function can be called when dealing with a user object
 # User Model
 module.exports = (db) ->
 
-  UserSchema = new Schema {
-    name: {familyName: String, givenName: String}
-  }
+	# This variable will be in the schema.
+	# Just pulled it out to make things more readable
+	ACCOUNT = {
+		store_id: String,
+		account_number: String
+	}
+
+	# This is the schema.  It's where we define what a user looks like
+	UserSchema = new Schema {
+		name: String,
+		email: String,
+		password: String,
+		accounts: [ACCOUNT]
+	}
 
 
-
-
-  User = db.model "User", UserSchema
+	# This exports the schema
+	User = db.model "User", UserSchema
