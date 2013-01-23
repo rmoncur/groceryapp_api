@@ -14,7 +14,7 @@ reached.  If you add a section, be sure to refresh the table of contents.
 	* [Create](#create) - **POST** /users/
 
 
-## Auth
+## Users
 
 #### Create
 
