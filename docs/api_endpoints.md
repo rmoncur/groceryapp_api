@@ -43,7 +43,7 @@ fix the deficiency.
 ###### Error codes: <!-- TODO -->
 
 
-#### Dekete
+#### Delete
 
     GET /users/:user_id
 
