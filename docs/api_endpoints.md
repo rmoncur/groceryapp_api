@@ -11,14 +11,14 @@ reached.  If you add a section, be sure to refresh the table of contents.
 
 ## Navigation
 * [Users](#users)
-	* [Create](#create) - **POST** /users/
+	* [Create](#create) - **POST** /users
 
 
 ## Users
 
 #### Create
 
-    GET /auth/create
+    POST /users
 
 ###### Example Request: <!-- TODO -->
 ###### Expected Result: <!-- TODO -->
