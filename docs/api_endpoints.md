@@ -11,7 +11,7 @@ fix the deficiency.
 	* [Create](#create) - **POST** /users
 	* [Read](#read) - **GET** /users/:user_id
 	* [Update](#update) - **GET** /users/:user_id
-	* [DELETE](#delete) - **DEL** /users/:user_id
+	* [Delete](#delete) - **DEL** /users/:user_id
 
 
 ## Users
@@ -19,6 +19,33 @@ fix the deficiency.
 #### Create
 
     POST /users
+
+###### Example Request: <!-- TODO -->
+###### Expected Result: <!-- TODO -->
+###### Error codes: <!-- TODO -->
+
+
+#### Read
+
+    GET /users/:user_id
+
+###### Example Request: <!-- TODO -->
+###### Expected Result: <!-- TODO -->
+###### Error codes: <!-- TODO -->
+
+
+#### Update
+
+    GET /users/:user_id
+
+###### Example Request: <!-- TODO -->
+###### Expected Result: <!-- TODO -->
+###### Error codes: <!-- TODO -->
+
+
+#### Dekete
+
+    GET /users/:user_id
 
 ###### Example Request: <!-- TODO -->
 ###### Expected Result: <!-- TODO -->
