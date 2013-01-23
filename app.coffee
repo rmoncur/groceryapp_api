@@ -1,3 +1,10 @@
+###
+  How to run the server
+  1. install node
+  2. run npm install
+  3. run coffee ./app.coffee
+###
+
 #Express is a module that helps with making the server.  
 #It handles GETs, POSTs etc, as well as parsing data that is sent in said requests
 express = require 'express'
@@ -43,9 +50,21 @@ exports.createServer = ->
     app.use(express.static(__dirname + "/public"))
 
 
-  #This is a simple endpoint that just returns json
-  app.get '/', (req, res) ->
+  #This is a simple endpoint that just returns a fake user
+  app.get '/users/:user_id', (req, res) ->
     res.json {user: "Casey Moncur"}
+
+  #This is the post endpoint where users will be created
+  app.post '/users', (req, res) ->
+    res.json {success: true, code: 201}
+
+  #This is the put endpoint where users will be updated
+  app.put '/users/:user_id', (req, res) ->
+    res.json {success: true, code: 200}
+
+  #This is the delete endpoint where users will be deleted
+  app.delete '/users/:user_id', (req, res) ->
+    res.json {success: true, code: 200}
 
   # final return of app object
   # in coffeescript everything always returns a value, and functions return the last value computed.

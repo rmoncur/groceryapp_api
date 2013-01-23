@@ -10,7 +10,7 @@ fix the deficiency.
 * [Users](#users)
 	* [Create](#create) - **POST** /users
 	* [Read](#read) - **GET** /users/:user_id
-	* [Update](#update) - **GET** /users/:user_id
+	* [Update](#update) - **PUT** /users/:user_id
 	* [Delete](#delete) - **DEL** /users/:user_id
 
 
@@ -36,7 +36,7 @@ fix the deficiency.
 
 #### Update
 
-    GET /users/:user_id
+    PUT /users/:user_id
 
 ###### Example Request: <!-- TODO -->
 ###### Expected Result: <!-- TODO -->
@@ -45,7 +45,7 @@ fix the deficiency.
 
 #### Delete
 
-    GET /users/:user_id
+    DEL /users/:user_id
 
 ###### Example Request: <!-- TODO -->
 ###### Expected Result: <!-- TODO -->
