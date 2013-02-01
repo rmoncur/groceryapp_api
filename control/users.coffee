@@ -15,7 +15,6 @@ module.exports = (User) ->
 			else
 				return res.json {error: true, message: "Not Found"}, 401
 
-
 	deleteUser: (req, res) ->
 		email = req.params.email
 		User.getUser email, (err, obj) ->
