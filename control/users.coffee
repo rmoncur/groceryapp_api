@@ -1,4 +1,10 @@
+response = require './response'
+
 module.exports = (User) =>
+	errors = {
+		USER_NOT_FOUND = {error: true, message: "Not Found", code: 401}
+	}
+
 	createUser: (req, res)=>
 		body = req.body
 		user = new User body
@@ -8,18 +14,26 @@ module.exports = (User) =>
 
 	getUser: (req, res) =>
 		email = req.params.email
-		User.getUser email, (err, obj) =>
-			return res.json {error: true, message: err.message}, 500 if err?
-			if obj not null
-				res.json obj
+		User.getUser email, (err, user) =>
+			return user.json {error: true, message: err.message}, 500 if err?
+			if user not null
+				res.json user
 			else
-				return res.json {error: true, message: "Not Found"}, 401
-
+				return res.json {error: true, message: errors.USER_NOT_FOUND.message}, errors.USER_NOT_FOUND.code
 
 	deleteUser: (req, res) =>
 		email = req.params.email
+		User.getUser email, (err, user) =>
+			return res.json {error: true, message: err.message}, 500 if err?
+			if user not null
+				user.remove()
+			res.json {message: "deleted"}, 200
+
+	authenticateUser: (req, res, next)=>
+		email = req.params.email
 		User.getUser email, (err, obj) =>
 			return res.json {error: true, message: err.message}, 500 if err?
-			if obj not null
-				obj.remove()
-			res.json {message: "deleted"}, 200
+			return res.json response.error @errors.USER_NOT_FOUND if not user?
+			password = req.params.password
+			return res.json response.error @errors.USER_NOT_FOUND if user.password not password
+			next(req, res)

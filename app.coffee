@@ -50,15 +50,12 @@ exports.createServer = ->
     app.use(express.static(__dirname + "/public"))
 
 
-
-
-
-
-  #Endpoints
-
   #This is a simple endpoint that just returns a fake user
   app.get '/users/:user_id', (req, res) ->
     res.json {user: "Casey Moncur"}
+  
+  app.get '/leckie/', (req, res) ->
+    res.json {user: "Leckie Gunter"}
 
   #This is the post endpoint where users will be created
   app.post '/users', (req, res) ->
@@ -82,4 +79,3 @@ if module == require.main
   app = exports.createServer()
   app.listen 8080 #This is the port we are listening on.
   console.log "Running Grocery App Service" #This is just some output to show that the server is working
-
