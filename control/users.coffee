@@ -2,7 +2,7 @@ response = require './response'
 
 module.exports = (User) =>
 	errors = {
-		USER_NOT_FOUND = {error: true, message: "Not Found", code: 401}
+		USER_NOT_FOUND: {error: true, message: "Not Found", code: 401}
 	}
 
 	createUser: (req, res)=>
