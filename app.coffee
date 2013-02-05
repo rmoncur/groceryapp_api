@@ -50,6 +50,12 @@ exports.createServer = ->
     app.use(express.static(__dirname + "/public"))
 
 
+
+
+
+
+  #Endpoints
+
   #This is a simple endpoint that just returns a fake user
   app.get '/users/:user_id', (req, res) ->
     res.json {user: "Casey Moncur"}

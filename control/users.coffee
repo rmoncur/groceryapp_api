@@ -1,14 +1,14 @@
-module.exports = (User) ->
-	createUser: (req, res)->
+module.exports = (User) =>
+	createUser: (req, res)=>
 		body = req.body
 		user = new User body
-		user.save (err) ->
+		user.save (err) =>
 			return res.send {error: true, message: err.message}, 500 if err?
 			res.json user
 
-	getUser: (req, res) ->
+	getUser: (req, res) =>
 		email = req.params.email
-		User.getUser email, (err, obj) ->
+		User.getUser email, (err, obj) =>
 			return res.json {error: true, message: err.message}, 500 if err?
 			if obj not null
 				res.json obj
@@ -16,9 +16,9 @@ module.exports = (User) ->
 				return res.json {error: true, message: "Not Found"}, 401
 
 
-	deleteUser: (req, res) ->
+	deleteUser: (req, res) =>
 		email = req.params.email
-		User.getUser email, (err, obj) ->
+		User.getUser email, (err, obj) =>
 			return res.json {error: true, message: err.message}, 500 if err?
 			if obj not null
 				obj.remove()
