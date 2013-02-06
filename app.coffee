@@ -50,6 +50,11 @@ exports.createServer = ->
     app.use(express.static(__dirname + "/public"))
 
 
+  app.get '/users/auth', (req, res) ->
+    data = {user_id: req.query.user_id, token: req.query.token}
+    userController.authenticateUser data, res, (user)=>
+      res.json user
+
   #This is a simple endpoint that just returns a fake user
   app.get '/users/:user_id', (req, res) ->
     res.json {user: "Casey Moncur"}
@@ -59,7 +64,7 @@ exports.createServer = ->
 
   #This is the post endpoint where users will be created
   app.post '/users', (req, res) ->
-    res.json {success: true, code: 201}
+    userController.createUser req, res
 
   #This is the put endpoint where users will be updated
   app.put '/users/:user_id', (req, res) ->
@@ -76,6 +81,7 @@ exports.createServer = ->
 
 #This is where we really start our server
 if module == require.main
+  PORT = 8080
   app = exports.createServer()
-  app.listen 8080 #This is the port we are listening on.
-  console.log "Running Grocery App Service" #This is just some output to show that the server is working
+  app.listen PORT #This is the port we are listening on.
+  console.log "Running Grocery App Service on port: " + PORT #This is just some output to show that the server is working

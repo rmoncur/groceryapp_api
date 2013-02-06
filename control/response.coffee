@@ -1,3 +1,3 @@
 module.exports = ()=>
-	error: (error, res)->
-		res.json {error: error.error, message: error.message}, error.code if not user?
+	error: (err, res)->
+		res.json {error: err.error, message: err.message}, err.code if not user?

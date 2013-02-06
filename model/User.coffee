@@ -2,6 +2,7 @@
 #Require Mongoose so that we can use schemas
 mongoose = require 'mongoose'
 Schema = mongoose.Schema
+ObjectId = require('mongoose').Types.ObjectId
 
 # This is the constructor for the User Schema
 # Every function inside of this function can be called when dealing with a user object
@@ -20,9 +21,17 @@ module.exports = (db) ->
 		name: String,
 		email: String,
 		password: String,
-		accounts: [ACCOUNT]
+		accounts: [ACCOUNT],
+		token: String
 	}
 
+	UserSchema.statics.getUser = (email, cb)->
+		@findOne({"email": email}).exec cb
+
+	UserSchema.statics.getUserById = (user_id, cb)->
+		user_id = new ObjectId(user_id)
+		console.log user_id
+		@find("_id" : user_id).exec cb
 
 	# This exports the schema
 	User = db.model "User", UserSchema
