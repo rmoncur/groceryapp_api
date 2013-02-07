@@ -20,17 +20,31 @@ fix the deficiency.
 
     POST /users
 
-###### Example Request: <!-- TODO -->
-###### Expected Result: <!-- TODO -->
+###### Example Request:
+{
+	"email": "caseymonc@gmail.com",
+	"password": "p@ssw0rd"
+}
+###### Expected Result:
+{
+	"email" : "caseymonc@gmail.com",
+	"user_id": "afffe332234222",
+	"token": "adba0d-eee4535-345252-abc4434"
+}
 ###### Error codes: <!-- TODO -->
 
 
 #### Read
 
-    GET /users/:user_id
+    GET /users/:user_id?token=adba0d-eee4535-345252-abc4434
 
-###### Example Request: <!-- TODO -->
-###### Expected Result: <!-- TODO -->
+###### Example Request:
+###### Expected Result:
+{
+	"email" : "caseymonc@gmail.com",
+	"user_id": "afffe332234222",
+	"token": "adba0d-eee4535-345252-abc4434"
+}
 ###### Error codes: <!-- TODO -->
 
 
@@ -47,6 +61,13 @@ fix the deficiency.
 
     DEL /users/:user_id
 
-###### Example Request: <!-- TODO -->
-###### Expected Result: <!-- TODO -->
+###### Example Request:
+{
+	"user_id": "afffe332234222",
+	"token": "adba0d-eee4535-345252-abc4434"
+}
+###### Expected Result:
+{
+	"message": "deleted"
+}
 ###### Error codes: <!-- TODO -->
