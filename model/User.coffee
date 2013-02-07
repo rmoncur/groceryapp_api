@@ -33,5 +33,10 @@ module.exports = (db) ->
 		console.log user_id
 		@find("_id" : user_id).exec cb
 
+	UserSchema.statics.deleteUserById = (user_id, cb)->
+		user_id = new ObjectId(user_id)
+		console.log user_id
+		@remove({"_id" : user_id}).exec cb
+
 	# This exports the schema
 	User = db.model "User", UserSchema

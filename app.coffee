@@ -23,6 +23,8 @@ UserController = require './control/users'
 #and will be used mainly by the UserController.
 User = require './model/User'
 
+mongomate = require("mongomate")('mongodb://localhost:27017/grocery')
+
 #This is creating URI to the database
 DB = process.env.DB || 'mongodb://localhost:27017/grocery'
 
@@ -50,14 +52,15 @@ exports.createServer = ->
     app.use(express.static(__dirname + "/public"))
 
 
-  app.get '/users/auth', (req, res) ->
+  app.get '/users/auth/:user_id', (req, res) ->
     data = {user_id: req.query.user_id, token: req.query.token}
     userController.authenticateUser data, res, (user)=>
       res.json user
 
   #This is a simple endpoint that just returns a fake user
   app.get '/users/:user_id', (req, res) ->
-    res.json {user: "Casey Moncur"}
+    userController.authenticateUser req, res, (user)=>
+      userController.getUser req, res
   
   app.get '/leckie/', (req, res) ->
     res.json {user: "Leckie Gunter"}
@@ -72,7 +75,8 @@ exports.createServer = ->
 
   #This is the delete endpoint where users will be deleted
   app.delete '/users/:user_id', (req, res) ->
-    res.json {success: true, code: 200}
+    userController.authenticateUser req, res, (user)=>
+      userController.deleteUser req, res
 
   # final return of app object
   # in coffeescript everything always returns a value, and functions return the last value computed.
