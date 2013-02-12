@@ -23,7 +23,7 @@ UserController = require './control/users'
 #and will be used mainly by the UserController.
 User = require './model/User'
 
-mongomate = require("mongomate")('mongodb://localhost:27017/grocery')
+mongomate = require("mongomate")('mongodb://localhost')
 
 #This is creating URI to the database
 DB = process.env.DB || 'mongodb://localhost:27017/grocery'
@@ -47,7 +47,7 @@ exports.createServer = ->
     app.use(express.bodyParser())
     app.use(express.methodOverride())
     app.use(express.session({ secret: 'keyboard cat' }))
-    
+    app.use('/db', mongomate);
     app.use(app.router)
     app.use(express.static(__dirname + "/public"))
 
