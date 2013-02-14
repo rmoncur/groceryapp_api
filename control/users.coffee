@@ -56,6 +56,9 @@ module.exports = (User) =>
 		if not user_id
 			user_id = req.params.user_id
 
+		
+		return response.error errors.NOT_AUTHENTICATED, res if not token or not user_id
+
 		User.getUserById user_id, (err, user) =>
 			return res.json {error: true, message: err.message}, 500 if err?
 			return response.error errors.USER_NOT_FOUND, res if not user?
