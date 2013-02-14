@@ -78,6 +78,7 @@ exports.createServer = ->
     userController.authenticateUser req, res, (user)=>
       userController.deleteUser req, res
 
+
   # final return of app object
   # in coffeescript everything always returns a value, and functions return the last value computed.
   # so we don't really need to use the return keyword
