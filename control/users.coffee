@@ -52,7 +52,7 @@ module.exports = (User) =>
 
 		if not token
 			tokenStrings = req.headers['authorization'].split(" ")
-			token = req.headers['authorization'].split(" ")[1] if tokenStrings.length > 0
+			token = tokenStrings[1] if tokenStrings.length > 0
 		if not user_id
 			user_id = req.params.user_id
 
