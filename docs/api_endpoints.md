@@ -12,6 +12,8 @@ fix the deficiency.
 	* [Read](#read) - **GET** /users/:user_id
 	* [Update](#update) - **PUT** /users/:user_id
 	* [Delete](#delete) - **DEL** /users/:user_id
+* [Products](#products)
+	* [Create](#createproduct) - **POST** /products	
 
 
 ## Users
