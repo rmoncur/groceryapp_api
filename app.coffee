@@ -18,10 +18,12 @@ Mongoose = require 'mongoose'
 #I am importing the UserController which I will then call
 #Methods on as I receive requests that pertain to the /users URI
 UserController = require './control/users'
+ProductController = require './control/products'
 
 #This is the User model object.  It will handle putting stuff into the database
 #and will be used mainly by the UserController.
 User = require './model/User'
+Product = require './model/Product'
 
 mongomate = require("mongomate")('mongodb://localhost')
 
@@ -32,6 +34,8 @@ DB = process.env.DB || 'mongodb://localhost:27017/grocery'
 db = Mongoose.createConnection DB
 user = User db
 userController = UserController user
+product = Product db
+productController = ProductController product
 
 # This is the function that creates the server.
 # We will define endpoints and connect them up to 
@@ -78,6 +82,16 @@ exports.createServer = ->
     userController.authenticateUser req, res, (user)=>
       userController.deleteUser req, res
 
+
+  # PRODUCTS #
+  app.get '/products/:barcode', (req, res) ->
+    productController.getProduct req, res
+
+  app.post '/products', (req, res) -> 
+    productController.createProduct req, res
+
+  app.put '/products/:product_id', (req, res) ->
+    productController.updateProduct req, res
 
   # final return of app object
   # in coffeescript everything always returns a value, and functions return the last value computed.

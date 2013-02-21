@@ -1,22 +1,29 @@
 #Require Mongoose so that we can use schemas
 mongoose = require 'mongoose'
 Schema = mongoose.Schema
+ObjectId = require('mongoose').Types.ObjectId
 
-# This is the constructor for the Item Schema
+# This is the constructor for the Schema
 module.exports = (db) ->
 
-	# This is the schema.  It's where we define what a user looks like
+	# This is the schema.  It's where we define what a product looks like
 	ProductSchema = new Schema {
-		productID: String,
 		userID: String,
 		name: String,
-		quantity: String,
+		size: String,
 		description: String,
 		barcode: String,
-		tags: [TAG]],
-		accounts: [ACCOUNT],
-		lastUpdate: String
+#		tags: [TAG],
+#		accounts: [ACCOUNT],
+		lastUpdate: Date
 	}
+	
+	ProductSchema.statics.getProduct = (barcode, cb)->
+    @findOne({"barcode": barcode}).exec cb
+    
+  ProductSchema.statics.getProductById = (product_id, cb) ->
+    product_id = new ObjectId(product_id)
+    @findOne("_id" : product_id).exec cb
 
 	# This exports the schema
 	Product = db.model "Product", ProductSchema
