@@ -10,16 +10,16 @@ module.exports = (db) ->
 #	itemSchema = Item db
 	
 	ITEM = {
-		productId: String,
-		price: Number
+		productId: {type: String, required: true},
+		price: {type: Number, required: true}
 	}
 	
 	# This is the schema.  It's where we define what a user looks like
 	PurchaseSchema = new Schema {
-		userId: String,
-		storeId: String,
-		items: [ITEM],
-		total: Number,
+		userId: {type: String, required: true},
+		storeId: {type: String, required: true},
+		items: {type: [ITEM], required: true},
+		total: {type: Number, required: true},
 		purchaseDate: {type: Date, default: Date.now}
 	}
 

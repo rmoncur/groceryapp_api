@@ -37,12 +37,6 @@ module.exports = (Purchase) =>
 	
 		body = req.body
 		
-		items = []
-#		for item in body.items
-#			items.push new ITEM item
-#		
-#		body.items = items
-		
 		purchase = new Purchase body
 		purchase.save (err) =>
 			return res.send {error: true, message: err.message}, 500 if err?
