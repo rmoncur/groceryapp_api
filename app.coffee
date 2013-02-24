@@ -102,9 +102,17 @@ exports.createServer = ->
     
     
   # PURCHASES #
-	app.post '/purchases', (req, res) ->	
-		console.log req.body
+	app.post '/purchases', (req, res) ->
 		purchaseController.createPurchase req, res
+		
+	app.get '/purchases/:user_id', (req, res) ->
+		purchaseController.getPurchasesForUser req, res
+		
+	app.delete '/purchases/:purchase_id', (req, res) ->
+		purchaseController.deletePurchase req, res
+		
+	app.put '/purchases/:purchase_id', (req, res) ->
+		purchaseController.updatePurchase req, res
 
   # final return of app object
   # in coffeescript everything always returns a value, and functions return the last value computed.

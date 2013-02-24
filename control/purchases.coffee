@@ -41,50 +41,32 @@ module.exports = (Purchase) =>
 		purchase.save (err) =>
 			return res.send {error: true, message: err.message}, 500 if err?
 			res.json purchase
-
-#	getProduct: (req, res) =>
-#		barcode = req.params.barcode
-#		#We will store all of our barcodes as 13 digit codes so if they are only 12 add the leading 0
-#		barcode = "0#{barcode}" if barcode.length is 12
-#		Product.getProduct barcode, (err, product) =>
-#			return res.json {error: true, message: err.message}, 500 if err?
-#			return findProduct barcode, res if not product?
-#			res.json product
-
-#  findProduct = (barcode, res) =>
-#    apikey = "187bd7a0e52dd56fd86e4ba25629084c"
-#    
-#    options = {
-#      hostname: "upcdatabase.org",
-#      path: "/api/json/#{apikey}/#{barcode}"
-#    }
-#    
-#    req = http.get options, (upcResponse) -> 
-#      output = ""
-#      
-#      upcResponse.on 'data', (chunk) -> 
-#        output += chunk
-#        
-#      upcResponse.on 'end', ->
-#        result = JSON.parse output
-#        if result.valid is "true"
-#          product = new Product {
-#            name: result.itemname,
-#            #If we requested a 12 digit number we'll convert it to a 13 digit
-#            barcode: if result.number.length is 13 then result.number else "0#{result.number}",
-#            description: result.description
-#          }
-#          product.save()
-#        else if barcode.length is 13
-#          #If we didn't find the 13 digit code at upcdatabase.org then we will see if they have a matching 12 digit code.
-#          return findProduct barcode.substring(1), res
-#        else
-#          return response.error errors.PRODUCT_NOT_FOUND, res
-
-#        res.json product
-#        
-#    req.on 'error', (e) ->
-#      console.log e.message
+			
+	getPurchasesForUser: (req, res) =>
+	
+		user_id = req.params.user_id
+		
+		#Maybe check if user exists?
+		
+		Purchase.getPurchasesForUser user_id, (err, purchases) =>
+			return res.json {error: true, message: err.message}, 500 if err?
+			res.json purchases
+		
+	deletePurchase: (req, res) =>
+	
+		purchase_id = req.params.purchase_id
+		
+		Purchase.deletePurchase purchase_id, (err, purchases) =>
+			return res.json {error: true, message: err.message}, 500 if err?
+			res.json {message: "deleted"}, 200
+			
+	updatePurchase: (req, res) =>
+		
+		purchase_id = req.params.purchase_id
+		overwrite = req.query.overwrite
+		res.json { message: "not finished" }, 500
+		
+		
       
 
 errors = ()->

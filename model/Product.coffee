@@ -8,7 +8,7 @@ module.exports = (db) ->
 
 	# This is the schema.  It's where we define what a product looks like
 	ProductSchema = new Schema {
-		userID: String,
+		user_id: String,
 		name: String,
 		size: String,
 		description: String,
