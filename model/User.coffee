@@ -18,11 +18,12 @@ module.exports = (db) ->
 
 	# This is the schema.  It's where we define what a user looks like
 	UserSchema = new Schema {
-		name: String,
+		username: String,
 		email: String,
 		password: String,
 		accounts: [ACCOUNT],
-		token: String
+		token: String,
+		points: Number
 	}
 
 	UserSchema.statics.getUser = (email, cb)->
