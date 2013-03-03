@@ -150,10 +150,10 @@ fix the deficiency.
 ###### Example Request:
     /purchases/5132b83af9d6494b23000003
     {
-        "user_id": "3",
-        "store_id": "2",
-        "total": 13.07,
-        "purchaseDate": "October 17, 1999"
+        "user_id": "3",                             //optional
+        "store_id": "2",                            //optional
+        "total": 13.07,                             //optional
+        "purchaseDate": "October 17, 1999"          //optional
     }
 ###### Expected Result:
     {
