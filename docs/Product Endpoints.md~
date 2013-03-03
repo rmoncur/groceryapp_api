@@ -28,25 +28,25 @@ fix the deficiency.
     }
 ###### Expected Result:
     {
-    	"__v": 0,
-    	"lastUpdate": "2013-02-16T21:50:19.882Z",
-    	"name": "Viva 2% Milk",
-    	"description": "Some description about milk",
-    	"barcode": "046813279202",
-    	"size": "1 Gallon",
-    	"_id": "511fff1b72bc612821000002"
+        "__v": 0,
+        "lastUpdate": "2013-02-16T21:50:19.882Z",
+        "name": "Viva 2% Milk",
+        "description": "Some description about milk",
+        "barcode": "046813279202",
+        "size": "1 Gallon",
+        "_id": "511fff1b72bc612821000002"
     }
 ###### Error codes: 
     404 Not Found
     {
-    	"error": true,
-    	"message": "Not found"
+        "error": true,
+        "message": "Not found"
     }
     
     409 Conflict
     {
-    	"error": true,
-    	"message": "A barcode is required"
+        "error": true,
+        "message": "A barcode is required"
     }
 
 
@@ -58,19 +58,19 @@ fix the deficiency.
     /products/046813279202
 ###### Expected Result:
     {
-    	"__v": 0,
-    	"lastUpdate": "2013-02-16T21:50:19.882Z",
-    	"name": "Viva 2% Milk",
-    	"description": "Some description about milk",
-    	"barcode": "046813279202",
-    	"size": "1 Gallon",
-    	"_id": "511fff1b72bc612821000002"
+        "__v": 0,
+        "lastUpdate": "2013-02-16T21:50:19.882Z",
+        "name": "Viva 2% Milk",
+        "description": "Some description about milk",
+        "barcode": "046813279202",
+        "size": "1 Gallon",
+        "_id": "511fff1b72bc612821000002"
     }
 ###### Error codes:
     404 Not Found
     {
-    	"error": true,
-    	"message": "Not found"
+        "error": true,
+        "message": "Not found"
     }
 
 #### Update
@@ -87,18 +87,18 @@ fix the deficiency.
     }
 ###### Expected Result:
     {
-    	"__v": 0,
-    	"lastUpdate": "2013-02-16T21:50:19.882Z",
-    	"barcode": "100",
+        "__v": 0,
+        "lastUpdate": "2013-02-16T21:50:19.882Z",
+        "barcode": "100",
         "name": "Mtn Dairy 1% Milk", 		
         "size": "1 Gal", 			
         "description": "Delicious Mountain Dairy Milk",
-    	"_id": "511fff1b72bc612821000002"
+        "_id": "511fff1b72bc612821000002"
     } 
 ###### Error codes:
     404 Not Found
     {
-    	"error": true,
-    	"message": "Not found"
+        "error": true,
+        "message": "Not found"
     }
 

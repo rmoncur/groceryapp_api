@@ -97,6 +97,52 @@ fix the deficiency.
         "message": "Purchase Not found"
     }
 
+#### Read
+
+    GET /users/:user_id/purchases
+
+###### Example Request:
+    /users/3/purchases
+###### Expected Result:
+    [
+        {
+            "user_id": "3",
+            "store_id": "2",
+            "total": 13.07,
+            "_id": "512943d8773f6d881b00000a",
+            "__v": 0,
+            "purchaseDate": "2013-02-23T22:34:00.758Z",
+            "items": [
+                {
+                    "product_id": "3",
+                    "price": 12.3,
+                    "_id": "512943d8773f6d881b00000b"
+                }
+            ]
+        },
+        {
+            "user_id": "3",
+            "store_id": "2",
+            "total": 13.07,
+            "_id": "512943dc773f6d881b00000c",
+            "__v": 0,
+            "purchaseDate": "2013-02-23T22:34:04.468Z",
+            "items": [
+                {
+                    "product_id": "3",
+                    "price": 12.3,
+                    "_id": "512943dc773f6d881b00000d"
+                }
+            ]
+        }
+    ]
+###### Error codes:
+    404 Not Found
+    {
+        "error": true,
+        "message": "User Not found"
+    }
+
 #### Update
 
     PUT /purchases/:purchase_id
@@ -114,21 +160,39 @@ fix the deficiency.
         "user_id": "3",
         "store_id": "2",
         "total": 13.07,
-    "_id": "5132b83af9d6494b23000003",
-    "__v": 0,
-    "purchaseDate": "1999-10-17T06:00:00.000Z",
-    "items": [
-        {
-            "product_id": "3",
-            "price": 12.3,
-            "_id": "5132b83af9d6494b23000004"
-        }
-    ]
-}
+        "_id": "5132b83af9d6494b23000003",
+        "__v": 0,
+        "purchaseDate": "1999-10-17T06:00:00.000Z",
+        "items": [
+            {
+                "product_id": "3",
+                "price": 12.3,
+                "_id": "5132b83af9d6494b23000004"
+            }
+        ]
+    }
 ###### Error codes:
     404 Not Found
     {
         "error": true,
-        "message": "Not found"
+        "message": "Purchase Not found"
+    }
+    
+    404 Not Found
+    {
+        "error": true,
+        "message": "User Not found"
+    }
+    
+    404 Not Found
+    {
+        "error": true,
+        "message": "Store Not Found"
+    }
+    
+    404 Not Found
+    {
+        "error": true,
+        "message": "Product Not Found"
     }
 

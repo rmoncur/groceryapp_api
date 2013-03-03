@@ -13,6 +13,18 @@ module.exports = (Purchase) =>
 			error: true
 			message: "Item Not Found"
 			code: 404
+		USER_NOT_FOUND: 
+			error: true
+			message: "User Not Found"
+			code: 404
+		PRODUCT_NOT_FOUND: 
+			error: true
+			message: "Product Not Found"
+			code: 404
+		STORE_NOT_FOUND:
+			error: true
+			message: "Store Not Found"
+			code: 404
 
 	createPurchase: (req, res)=>
 	
@@ -30,11 +42,6 @@ module.exports = (Purchase) =>
 		Purchase.getPurchaseById purchase_id, (err, purchase) =>
 			return res.send {error: true, message: err.message}, 500 if err?
 			return response.error errors.PURCHASE_NOT_FOUND, res if not purchase?
-			
-			console.log purchase
-			console.log normalize purchase
-			purchase = normalize purchase
-			console.log purchase.purchaseDate
 			
 			res.json purchase
 					
@@ -120,9 +127,4 @@ module.exports = (Purchase) =>
 			
 			res.json purchase
 			
-
-normalize = (purchase) ->
-	purchase.purchaseDate = purchase.purchaseDate.toString()
-	purchase.cheeseface = "stupdi"
-	purchase
 
