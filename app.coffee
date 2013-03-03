@@ -95,6 +95,9 @@ exports.createServer = ->
     UserController.authenticateUser req, res, (user)=>
       UserController.deleteUser req, res
 
+  app.get '/users/:user_id/purchases', (req, res) ->
+    PurchaseController.getPurchasesForUser req, res
+
   ### Tag Endpoints ###
   #Get all Tags and those associated with the user_id
   app.get '/tags/:user_id', (req, res) ->
@@ -129,8 +132,8 @@ exports.createServer = ->
   app.post '/purchases', (req, res) ->
     PurchaseController.createPurchase req, res
     
-  app.get '/purchases/:user_id', (req, res) ->
-    PurchaseController.getPurchasesForUser req, res
+  app.get '/purchases/:purchase_id', (req, res) ->
+    PurchaseController.getPurchase req, res
     
   app.delete '/purchases/:purchase_id', (req, res) ->
     PurchaseController.deletePurchase req, res
