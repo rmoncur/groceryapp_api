@@ -13,7 +13,7 @@ fix the deficiency.
 	* [Update](#update) - **PUT** /users/:user_id
 	* [Delete](#delete) - **DEL** /users/:user_id
 	
-	* [Read] - **GET** /users/:user_id/purchases (see Purchase Endpoints.md)
+	* Read - **GET** /users/:user_id/purchases (see Purchase Endpoints.md)
 
 
 ## Users
