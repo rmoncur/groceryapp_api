@@ -16,10 +16,16 @@ module.exports = (db) ->
 	PurchaseSchema = new Schema {
 		user_id: {type: String, required: true},
 		store_id: {type: String, required: true},
-		items: {type: [ITEM], required: true},
+		items: [ITEM],
 		total: {type: Number, required: true},
 		purchaseDate: {type: Date, default: Date.now}
 	}
+
+	PurchaseSchema.statics.getPurchaseById = (purchase_id, cb) ->
+		@findOne({ "_id": purchase_id}).exec cb
+
+	PurchaseSchema.statics.getPurchaseByItemId = (item_id, cb) ->
+		@findOne({ "items" : { $elemMatch : { "_id" : item_id }}}).exec cb
 
 	PurchaseSchema.statics.getPurchasesForUser = (user_id, cb) ->
 #		user_id = new ObjectId user_id
@@ -28,6 +34,9 @@ module.exports = (db) ->
 	PurchaseSchema.statics.deletePurchase = (purchase_id, cb) ->
 		purchase_id = new ObjectId purchase_id
 		@remove({ "_id": purchase_id}).exec cb
+		
+#	PurchaseSchema.statics.deleteItem = (item_id, cb) ->
+#		@remove({ "items" : { $elemMatch : { "_id" : item_id }}}).exec cb
 
 	# This exports the schema
 	Purchase = db.model "Purchase", PurchaseSchema

@@ -80,7 +80,7 @@ module.exports = (Product) =>
           product = new Product {
             name: result.itemname,
             #If we requested a 12 digit number we'll convert it to a 13 digit
-            barcode: if result.number.length is 13 then result.number else "0#{result.number}",
+            barcode: if result.number.length is 12 then "0#{result.number}" else result.number,
             description: result.description
           }
           product.save()

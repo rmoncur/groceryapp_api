@@ -137,6 +137,16 @@ exports.createServer = ->
     
   app.put '/purchases/:purchase_id', (req, res) ->
     PurchaseController.updatePurchase req, res
+    
+  # ITEMS #
+  app.put '/items/:item_id', (req, res) ->
+    PurchaseController.updateItem req, res
+    
+  app.delete '/items/:item_id', (req, res) ->
+    PurchaseController.deleteItem req, res
+    
+  app.post '/purchases/:purchase_id/items', (req, res) ->
+    PurchaseController.addItemToPurchase req, res
 
   # final return of app object
   # in coffeescript everything always returns a value, and functions return the last value computed.
@@ -145,7 +155,7 @@ exports.createServer = ->
 
 #This is where we really start our server
 if module == require.main
-  PORT = 80
+  PORT = 8000
   app = exports.createServer()
   app.listen PORT #This is the port we are listening on.
   console.log "Running Grocery App Service on port: " + PORT #This is just some output to show that the server is working
