@@ -33,7 +33,7 @@ fix the deficiency.
 	"user_id": "afffe332234222",
 	"token": "adba0d-eee4535-345252-abc4434",
 	"username": "caseymonc",
-  "points": 0
+  	"points": 0
 }
 ###### Error codes: <!-- TODO -->
 
@@ -97,3 +97,21 @@ fix the deficiency.
 	"message": "deleted"
 }
 ###### Error codes: <!-- TODO -->
+
+
+## Tags
+
+#### Create
+
+    POST /tags
+
+###### Example Request:
+{
+	"name": "milk",
+	"user_id": "afffe332234222",
+	"category" : "dairy",
+	"related" : [
+	{"name" : "cheese"}]},
+	"compliment" : [
+	{"name" : "cereal"},
+	{"name" : "cookies"}]}
