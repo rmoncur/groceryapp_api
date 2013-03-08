@@ -13,7 +13,7 @@ module.exports = (User) =>
 			code: 401
 		ALREADY_EXISTS: 
 			error: true
-			message: "Conflict: Already Exists"
+			message: "Conflict: User Already Exists"
 			code: 409
 
 	login: (req, res)=>

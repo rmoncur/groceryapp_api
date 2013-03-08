@@ -27,12 +27,12 @@ module.exports = (db) ->
 	}
 
 	UserSchema.statics.getUser = (email, cb)->
-		@findOne({"email": email}).exec cb
+		@findOne({"email": email}).exec cb # @ is the same as 'this' findOne is a method on the mongoos database. exec executes the call on the db. cb is the callback function that was passed in and will be called after the execute finishes.
 
 	UserSchema.statics.getUserById = (user_id, cb)->
 		user_id = new ObjectId(user_id)
 		console.log user_id
-		@find("_id" : user_id).exec cb
+		@find("_id" : user_id).exec cb # _id is unique
 
 	UserSchema.statics.deleteUserById = (user_id, cb)->
 		user_id = new ObjectId(user_id)
