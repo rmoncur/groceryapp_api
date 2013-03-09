@@ -106,22 +106,24 @@ errors = ()->
 		message: "A barcode is required"
 		code: 409
 
-#base = ()-> [
-#      'user_id'
-#      'email'
-#      'token'
-#  ]
+base = ()-> [
+      'product_id'
+      'user_id'
+      'name'
+      ''
+      'points'
+  ]
 
-#normalize = (user) ->
-#	result = {}
-#	fields = base()
-#	for key in fields
-#		if user[key]?
-#        result[key] = user[key]
-#	for key in fields
-#		if user[key]?
-#        result[key] = user[key]
-#    else if key is 'user_id' and user._id?
-#        result[key] = user._id
-#	
-#  return result
+normalize = (user) ->
+	result = {}
+	fields = base()
+	for key in fields
+		if user[key]?
+        result[key] = user[key]
+	for key in fields
+		if user[key]?
+        result[key] = user[key]
+    else if key is 'user_id' and user._id?
+        result[key] = user._id
+	
+  return result
