@@ -145,7 +145,7 @@ exports.createServer = ->
 
 #This is where we really start our server
 if module == require.main
-  PORT = 80
+  PORT = 8080
   app = exports.createServer()
   app.listen PORT #This is the port we are listening on.
   console.log "Running Grocery App Service on port: " + PORT #This is just some output to show that the server is working
