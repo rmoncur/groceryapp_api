@@ -9,6 +9,7 @@
 <script type="text/javascript" src="angular.js"></script>
 <script type="text/javascript" src="jquery-mobile-angular-adapter.js"></script>
 <script type="text/javascript" src="index.js"></script>
+<script type="text/javascript" src="md5.js"></script>
 <style>
 .progressbar{ border:1px solid gray; width:100%; height:15px; }
 .progress{ background-color:green; width:45%; height:15px; }
@@ -106,7 +107,7 @@
 	
 		<div class="ui-grid-a">
 			<div class="ui-block-a">
-				<img src="https://en.gravatar.com/avatar/d8671fa8a4476b40347fc63dde0d2828"  />
+				<img src="https://en.gravatar.com/avatar/d8671fa8a4476b40347fc63dde0d2828" ng-src="{{user.img}}"  />
 			</div>
 			<div class="ui-block-b">
 				{{user.username}}<br />
@@ -126,10 +127,30 @@
 		</ul>
 		My History
 		<ul data-role="listview" data-inset="true">
-			<li>{{user.ireported}}<a href="#">Items Reported</a></li>
+			<li>{{user.ireported}}<a href="#itemsreported" ng-click="getUserPurchases()">Items Reported</a></li>
 			<li>{{user.svisited}}<a href="#">Stores Visited</a></li>
 		</ul>
 	
+	</div>
+	<div data-role="footer">		
+		<div data-role="controlgroup" data-type="horizontal" >
+			<a data-role="button" href="#leaderboard">Lead</a>
+			<a data-role="button" href="#scan">Scan</a>	
+			<a data-role="button" href="#dashboard">Dash</a>
+			<a data-role="button" href="#report">Report</a>	
+			<a data-role="button" href="#lookup">Lookup</a>			
+		</div>		
+	</div>
+</div>
+
+<div data-role="page" id="itemsreported" >
+	<div data-role="header">
+		<h1>Items Reported</h1>
+	</div>
+	<div data-role="content">
+		<ul data-role="listview">
+			<li ng-repeat="purchase in user.purchases"><a href="#">Page</a></li>
+		</ul>					
 	</div>
 	<div data-role="footer">		
 		<div data-role="controlgroup" data-type="horizontal" >
@@ -272,7 +293,9 @@
 	<div data-role="header">
 		<h1>Lookup Item</h1>
 	</div>
-	<div data-role="content">
+	<div data-role="content">		
+		<input type="search" placeholder="Search for an item"  />
+		<br />
 		<ul data-role="listview">
 			<li ng-repeat="items in lookup"><a href="#"><img src="http://www.veryicon.com/icon/png/System/Candied%20Apples/Candy%20Apple%20Green%202.png" alt="Buy" class="ui-li-icon">{{items.name}}</a></li>			
 		</ul>		

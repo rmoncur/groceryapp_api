@@ -16,7 +16,7 @@ module = angular.module("grocery", []);
 module.controller('TodoController', function ($scope, $navigate,$waitDialog,$http){
 	$scope.user = {};
 
-	$scope.lookup = [{"name":"woof"},{"name":"woof2"},{"name":"woof3"}]
+	$scope.lookup = [{"name":"Item #1"},{"name":"Item #2"},{"name":"Item #3"}]
 	
 	//Registration/login data
 	$scope.regdata = {};
@@ -47,8 +47,12 @@ module.controller('TodoController', function ($scope, $navigate,$waitDialog,$htt
 			data:JSON.stringify($scope.logindata),
 			url: '/users/login',
 			success: function(data,ajax,xhr){
-				console.log("Success",data,ajax,xhr);
+				console.log("Success Login",data,ajax,xhr);
 				$scope.user = data;
+				$scope.user.purchases = [];
+				
+				$scope.user.img = 'http://www.gravatar.com/avatar/' + md5($scope.logindata.email);
+				
 				$.mobile.changePage($("#dashboard"),"slide");
 				//$.mobile.navigate("#dashboard");
 			},
@@ -111,6 +115,23 @@ module.controller('TodoController', function ($scope, $navigate,$waitDialog,$htt
 	
 	//Selecting a store
 	$scope.selectStore = function(store){ $scope.selectedStore = store; $scope.$apply(); }
+	
+	//Getting user purchases
+	$scope.getUserPurchases = function(){
+		
+		$.ajax({
+			type:"GET",
+			processData: true,
+			data:{},
+			url: '/users/' + $scope.user.user_id + "/purchases",
+			success: function(data,ajax,xhr){
+				console.log("Success Location",data,ajax,xhr);
+				$scope.$apply();
+			}						
+		});
+	}
+	
+	// ---- UNDER ---- CONSTRUCTION ---- //
 	
 	//Lookup an item
 	$scope.readItem = function(){
