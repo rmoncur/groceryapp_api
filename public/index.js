@@ -14,9 +14,10 @@
 module = angular.module("grocery", []);
 
 module.controller('TodoController', function ($scope, $navigate,$waitDialog,$http){
+	
 	$scope.user = {};
-
 	$scope.lookup = [{"name":"Item #1"},{"name":"Item #2"},{"name":"Item #3"}]
+	$scope.leaderboard = {"monthly":[{"name":"John Smith","points":142},{"name":"Jefferson","points":203}],"overall":[]}
 	
 	//Registration/login data
 	$scope.regdata = {};
@@ -49,7 +50,7 @@ module.controller('TodoController', function ($scope, $navigate,$waitDialog,$htt
 			success: function(data,ajax,xhr){
 				console.log("Success Login",data,ajax,xhr);
 				$scope.user = data;
-				$scope.user.purchases = [];
+				$scope.user.purchases = [{"name":"French fries"},{"name":"French Dip"}];
 				
 				$scope.user.img = 'http://www.gravatar.com/avatar/' + md5($scope.logindata.email);
 				
@@ -125,7 +126,8 @@ module.controller('TodoController', function ($scope, $navigate,$waitDialog,$htt
 			data:{},
 			url: '/users/' + $scope.user.user_id + "/purchases",
 			success: function(data,ajax,xhr){
-				console.log("Success Location",data,ajax,xhr);
+				console.log("Success User Purchases",data,ajax,xhr);
+				$scope.user.purchases = data;
 				$scope.$apply();
 			}						
 		});
@@ -231,6 +233,6 @@ $.ajaxSetup({
 	processData: false,
 	contentType: 'application/json',
 	error: function(){ console.log("Error"); },
-	beforeSend:function(){ $.mobile.loading( 'show' )   },
-	complete:function(){ $.mobile.loading( 'hide' ) }
+	//beforeSend:function(){ $.mobile.loading( 'show' )   },
+	//complete:function(){ $.mobile.loading( 'hide' ) }
 });

@@ -143,14 +143,16 @@
 	</div>
 </div>
 
+<!-- Items Reported List -->
 <div data-role="page" id="itemsreported" >
 	<div data-role="header">
 		<h1>Items Reported</h1>
 	</div>
 	<div data-role="content">
-		<ul data-role="listview">
-			<li ng-repeat="purchase in user.purchases"><a href="#">Page</a></li>
-		</ul>					
+		<ul data-role="listview" ng-show="user.purchases.length">
+			<li ng-repeat="purchase in user.purchases"><a href="#">{{purchase.name}}</a></li>
+		</ul>
+		<div id="nopurchases" ng-hide="user.purchases.length">No purchases</div>
 	</div>
 	<div data-role="footer">		
 		<div data-role="controlgroup" data-type="horizontal" >
@@ -166,7 +168,7 @@
 <!-- Leaderboard -->
 <div data-role="page" id="leaderboard">
 	<div data-role="header">
-		<h1>Leaderboard</h1>
+		<h1>Monthly Leaderboard</h1>
 	</div>
 	<div data-role="content">
 		<div class="ui-grid-a">
@@ -175,17 +177,17 @@
 		</div>
 		<hr />
 		<ul data-role="listview">
-			<li><img src="http://25.media.tumblr.com/avatar_12e428a5a556_128.png" width="40" height="40" />Jonathan42</li>
-			<li>
-				<img src="http://25.media.tumblr.com/avatar_824db6d89e00_128.png" width="40" height="40" />MittR
-			</li>
-			<li><a href="#">Page</a></li>
-			<li><a href="#">Page</a></li>
-		</ul>
-		
+			<li ng-repeat="leader in leaderboard.monthly"><img class="ui-li-icon" ng-src="http://25.media.tumblr.com/avatar_12e428a5a556_128.png" />{{leader.name}}</li>			
+		</ul>	
 	</div>
 	<div data-role="footer">
-		<h4>Navigation</h4>
+		<div data-role="controlgroup" data-type="horizontal" >
+			<a data-role="button" href="#leaderboard">Lead</a>
+			<a data-role="button" href="#scan">Scan</a>	
+			<a data-role="button" href="#dashboard">Dash</a>
+			<a data-role="button" href="#report">Report</a>	
+			<a data-role="button" href="#lookup">Lookup</a>			
+		</div>
 	</div>
 </div>
 
