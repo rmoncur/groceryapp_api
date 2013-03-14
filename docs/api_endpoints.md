@@ -110,8 +110,6 @@ fix the deficiency.
 	"name": "milk",
 	"user_id": "afffe332234222",
 	"category" : "dairy",
-	"related" : [
-	{"name" : "cheese"}]},
-	"compliment" : [
-	{"name" : "cereal"},
-	{"name" : "cookies"}]}
+	"related" : [{"name" : "cheese"}],
+	"compliment" : [{"name" : "cereal"},{"name" : "cookies"}]
+}

@@ -26,6 +26,7 @@ module.exports = (User) =>
 			return response.error errors.USER_NOT_FOUND, res
 
 	createUser: (req, res)=>
+		console.log req.body
 		email = req.body.email
 		password = req.body.password
 		
@@ -57,13 +58,15 @@ module.exports = (User) =>
 			res.json {message: "deleted"}, 200
 
 	authenticateUser: (req, res, next)=>
+		#console.log req
 		if req?.query
-			user_id = req.query.user_id
-			token = req.query.token
+			user_id = req.query.user_id if req.query.user_id
+			token = req.query.token if req.query.token
 		else if req?.body
 			user_id = req.body.user_id
 			token = req.body.token
-
+		#console.log user_id
+		#console.log token
 		if not token and req?.headers['authorization']?
 			tokenStrings = req.headers['authorization'].split(" ")
 			token = tokenStrings[1] if tokenStrings.length > 0

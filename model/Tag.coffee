@@ -1,6 +1,7 @@
 #Require Mongoose so that we can use schemas
 mongoose = require 'mongoose'
 Schema = mongoose.Schema
+ObjectId = require('mongoose').Types.ObjectId
 
 # This is the constructor for the Item Schema
 module.exports = (db) ->
@@ -17,30 +18,30 @@ module.exports = (db) ->
 
 	TagSchema.statics.getCategories = (user_id, cb) ->
 		#@group(
-		#	{key: { "category":true},
-        #    reduce: function(obj,prev) { prev.count += 1; },
-        #    initial: { count: 0 }
+		#	{key: { "category" : 1},
+        #    $reduce: (curr,result) => {},
+        #    initial: {}
         #    });
 
-	TagSchema.statics.getTag = (name, cb) ->
-		@find("name" : name).exec cb
+	TagSchema.statics.getTag = (tag_id, cb) ->
+		console.log "Tag.getTag"
+		console.log tag_id
+		tag_id = new ObjectId(tag_id)
+		@findOne({"tag_id" : tag_id}).exec cb
 
 	TagSchema.statics.getTagsByUser = (user_id, cb) ->
-		user_id = new ObjectId(user_id)
-		console.log user_id
-		@find("user_id" : user_id).exec (tags, cb) ->
-			#TODO Add prev tags to the new find from general tags
-			@find('user_id' : 0).exec cb
+		@find({ $or: [{ "userId" : user_id },{ "userId" : 0 }]}).exec cb
 
 	TagSchema.statics.getTagsByCategory = (category, cb) ->
-		@find("cagetory" : category).exec cb
+		console.log category
+		@find({"cagetory" : category}).exec cb
 
-	TagSchema.statics.getAllTags = (user_id, cb) ->
-		@find("user_id" : 0).exec cb
+	TagSchema.statics.searchTags = (search, cb) ->
+		console.log search
+		@findOne({"name" : search}).exec cb
 
-	TagSchema.statics.deleteTagByUserId = (user_id, cb) ->
-		user_id = new ObjectId(user_id)
-		console.log user_id
-		@remove("user_id" : user_id).exec cb
+	TagSchema.statics.deleteTagByUserId = (req, cb) ->
+		console.log req
+		@remove({"user_id" : user_id, "_id" : tag_id}).exec cb
 	# This exports the schema
 	Tag = db.model "Tag", TagSchema

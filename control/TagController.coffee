@@ -19,12 +19,13 @@ module.exports = (Tag) =>
 	createTag: (req, res)=>
 		body = req.body
 		name = body.name
+		console.log req
+		console.log body
 		#Tag.getTag name, (err, tag)=>
 		#	return res.json {error: true, message: err.message}, 500 if err?
 			#if tag?
 			#	if ((tag.userId == body.user_id) && (body.user != 0))?
-			#		return response.error errors.ALREADY_EXISTS, res if tag?		
-		body = req.body
+			#		return response.error errors.ALREADY_EXISTS, res if tag?
 		tag = new Tag body
 		tag.save (err) =>
 			return res.send {error: true, message: err.message}, 500 if err?
@@ -32,26 +33,31 @@ module.exports = (Tag) =>
 			res.json result
 
 	getTagsByUser: (req, res) =>
+		console.log "getTagsByUser"
 		user_id = req.params.user_id
+		console.log user_id
 		Tag.getTagsByUser user_id, (err, tags) =>
 			return res.json {error: true, message: err.message}, 500 if err?
-			return response.error errors.TAG_NOT_FOUND, res if not tag?
-			tag = tag[0]
-			res.json normalize tag
+			res.json tags
 
-	getCagetories: (req, res) =>
-		Tag.getCagetories
+	getCategories: (req, res) =>
+		Tag.getCategories
 
 	getTagsByCategory: (req, res) =>
-		Tag.getTagsByCategory req.body.category
+		console.log "getTagsByCategory"
+		Tag.getTagsByCategory req.query.category_id
 
 	getTag: (req, res) =>
-		Tag.getTag req.body.tag_id
+		console.log "getTag"
+		Tag.getTag req.query.tag_id, (err, tag) =>
+			return res.json {error: true, message: err.message}, 500 if err?
+			res.json tag
 
 	searchTags: (req, res) =>
-		Tag.searchTags req.body.search
-
-
+		console.log "searchTags"
+		Tag.searchTags req.query.search, (err, tag) =>
+			return res.json {error: true, message: err.message}, 500 if err?
+			res.json tag
 
 	deleteTag: (req, res) =>
 		tag_id = req.params.tag_id

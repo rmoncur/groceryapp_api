@@ -77,6 +77,7 @@ exports.createServer = ->
   
   #GET endpoint for getting user by user_id
   app.get '/users/:user_id', (req, res) ->
+    console.log req.body.user_id
     UserController.authenticateUser req, res, (user)=>
       UserController.getUser req, res
   
@@ -101,15 +102,24 @@ exports.createServer = ->
   #Get all Tags and those associated with the user_id
   app.get '/users/:user_id/tags/', (req, res) ->
     UserController.authenticateUser req, res, (user)=>
-      TagController.getTagsByUser req, res
+      console.log req.params
+      console.log req.query
+      if req.query.category_id
+        TagController.getTagsByCategory req, res
+      else if req.query.search
+        TagController.searchTags req, res
+      else if req.query.tag_id
+        TagController.getTag req, res
+      else
+        TagController.getTagsByUser req, res
 
   #Get all Categories
   app.get '/users/:user_id/tags/categories/', (req, res) ->
     TagController.getCategories req, res
   
   #Get all Tags in a Category
-  app.get '/users/:user_id/tags/?category_id=category_id', (req, res) ->
-    TagController.getTagsByCategory req, res
+  #app.get '/users/:user_id/tags/?category_id=category_id', (req, res) ->
+  #  TagController.getTagsByCategory req, res
   
   #Search for Tags
   app.get '/users/:user_id/tags/?search=search_string', (req, res) ->
