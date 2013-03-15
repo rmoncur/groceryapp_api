@@ -49,6 +49,8 @@ ProductController = ProductControllerModel Product
 Purchase = PurchaseModel db
 PurchaseController = PurchaseControllerModel Purchase
 
+StoresController = require('./control/StoresController')()
+
 # This is the function that creates the server.
 # We will define endpoints and connect them up to 
 # controllers here.
@@ -150,6 +152,30 @@ exports.createServer = ->
     
   app.post '/purchases/:purchase_id/items', (req, res) ->
     PurchaseController.addItemToPurchase req, res
+
+
+
+  # STORES #
+  app.get '/stores/nearby', (req, res)->
+    StoresController.getNearbyStores req, res
+
+  app.get '/stores/closest', (req, res)->
+    StoresController.getClosestStore req, res
+
+  app.get '/stores/here', (req, res)->
+    StoresController.getAtTheStore req, res
+
+  app.get '/stores/my', (req, res)->
+    StoreController.getMyStores req, res
+
+
+
+  app.post '/event/register', (req, res)->
+    res.json {code : 200, message : "OK"}
+
+  app.delete '/event/register', (req, res)->
+    res.json {code : 200, message : "Deleted"}
+
 
   # final return of app object
   # in coffeescript everything always returns a value, and functions return the last value computed.
