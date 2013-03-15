@@ -30,7 +30,7 @@ module.exports = (Product) =>
       product.lastUpdate = new Date
       product.save()
       
-      res.json product
+      res.json normalize(product)
 
 
 	createProduct: (req, res)=>
@@ -38,18 +38,19 @@ module.exports = (Product) =>
 		size = req.body.size
 		description = req.body.description
 		barcode = req.body.barcode
+		user_id = req.body.user_id
 		return response.error errors.BARCODE_REQUIRED, res if not barcode?
 		
 		Product.getProduct barcode, (err, product)=>
 			return res.json {error: true, message: err.message}, 500 if err?
-			return res.json product if product?
+			return res.json normalize product if product?
 			
 			body = req.body
 			product = new Product body
 			product.lastUpdate = new Date
 			product.save (err) =>
 				return res.send {error: true, message: err.message}, 500 if err?
-				res.json product
+				res.json normalize product
 
 	getProduct: (req, res) =>
 		barcode = req.params.barcode
@@ -58,7 +59,7 @@ module.exports = (Product) =>
 		Product.getProduct barcode, (err, product) =>
 			return res.json {error: true, message: err.message}, 500 if err?
 			return findProduct barcode, res if not product?
-			res.json product
+			res.json normalize(product)
 
   findProduct = (barcode, res) =>
     apikey = "187bd7a0e52dd56fd86e4ba25629084c"
@@ -90,7 +91,7 @@ module.exports = (Product) =>
         else
           return response.error errors.PRODUCT_NOT_FOUND, res
 
-        res.json product
+        res.json normalize product
         
     req.on 'error', (e) ->
       console.log e.message
@@ -110,20 +111,23 @@ base = ()-> [
       'product_id'
       'user_id'
       'name'
-      ''
+      'size'
       'points'
+      'barcode'
+      'last_update'
+      'description'
   ]
 
-normalize = (user) ->
+normalize = (product) ->
 	result = {}
 	fields = base()
 	for key in fields
-		if user[key]?
-        result[key] = user[key]
+		if product[key]?
+        result[key] = product[key]
 	for key in fields
-		if user[key]?
-        result[key] = user[key]
-    else if key is 'user_id' and user._id?
-        result[key] = user._id
+		if product[key]?
+        result[key] = product[key]
+    else if key is 'product_id' and product._id?
+        result[key] = product._id
 	
   return result

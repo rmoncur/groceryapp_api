@@ -18,7 +18,7 @@ module.exports = (db) ->
 		store_id: {type: String, required: true},
 		items: [ITEM],
 		total: {type: Number, required: true},
-		purchaseDate: {type: Date, default: Date.now}
+		purchase_date: {type: Date, default: Date.now}
 	}
 
 	PurchaseSchema.statics.getPurchaseById = (purchase_id, cb) ->

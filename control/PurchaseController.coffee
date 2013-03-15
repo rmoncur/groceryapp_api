@@ -127,4 +127,25 @@ module.exports = (Purchase) =>
 			
 			res.json purchase
 			
+base = ()-> [
+      'user_id'
+      'items'
+      'purchase_id'
+      'store_id'
+      'total'
+      'purchase_date'
+  ]
 
+normalize = (purchase) ->
+	result = {}
+	fields = base()
+	for key in fields
+		if purchase[key]?
+        result[key] = purchase[key]
+	for key in fields
+		if purchase[key]?
+        result[key] = purchase[key]
+    else if key is 'purchase_id' and purchase._id?
+        result[key] = purchase._id
+	
+  return result
