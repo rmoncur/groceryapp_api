@@ -1,9 +1,117 @@
 			
 test("Products", function () {
-	testGetProducts();
-	testCreateProducts();
+//	clearProductDatabase();
+//	testGetProducts();
+//	testCreateProducts();
+	randomizedTests();
 });
 
+function removeSomeAttributes(product) {
+	var attributes  = [
+		'name',
+		'barcode',
+		'description',
+		'amount',
+		'unit',
+	]
+	
+	var newProduct = {}
+	
+	var numOfAttrsToKeep = randomNumber(1, 5);
+	for(var i = 0; i < numOfAttrsToKeep; i++) {
+		var attrIndexToAdd = randomNumber(0, 4 - i);
+		var attr = attributes[attrIndexToAdd];
+		attributes.splice(attrIndexToAdd, 1);
+		
+		if(attr == 'unit' || attr == 'amount') {
+			if(newProduct['size'] == undefined) newProduct['size'] = {}
+			newProduct['size'][attr] = product['size'][attr];
+		}
+		else {
+			newProduct[attr] = product[attr];
+		}
+	}
+	
+	newProduct['product_id'] = product['product_id'];
+	
+	return newProduct;
+}
+
+function fillInMissingAttributes(partial, complete) {
+	for(var attr in complete) {
+		if(partial[attr] == null)
+			partial[attr] = complete[attr];
+	}
+	
+	return partial;
+}
+
+
+function randomizedTests() {
+	for(var i = 0; i < 30; i++) {
+		randomTest();
+	}
+}
+
+function randomTest() {
+	var expected = {
+		name: randomString(0, 20),
+		barcode: randomNumberString(10, 13),
+		description: randomString(0, 100),
+		size: {
+			amount: randomNumber(0, 200),
+			unit: randomString(0, 20)
+		}
+	}
+	
+	$.ajax({
+		url: "/products",
+		type: 'post',
+		data: expected,
+		complete: function (res) {
+			if(res.status == 200) {
+				var result = JSON.parse(res.responseText);
+				
+				//Add the product_id so that the deepEqual will work.
+				expected['product_id'] = result.product_id;
+				deepEqual(result, expected, "Create product");
+				
+				var productUpdate = removeSomeAttributes(expected);
+				
+				$.ajax({
+					url: "/products/" + productUpdate.product_id,
+					type: "put",
+					data: productUpdate,
+					complete: function (res) {
+						if(res.status == 200) {
+							var putResult = JSON.parse(res.responseText);
+							
+							var expectedUpdate = fillInMissingAttributes(productUpdate, expected);
+							
+							deepEqual(putResult, expectedUpdate, "Update product");
+							
+							$.ajax({
+								url: "/products/" + expectedUpdate.barcode,
+								type: "get",
+								complete: function (res) {
+									if(res.status == 200) {
+										var getResult = JSON.parse(res.responseText);
+										
+										deepEqual(getResult, expectedUpdate, "Get product");
+										
+									}
+									else error(res);
+								}
+							});
+						}
+						else error(res)
+					}
+				});
+			}
+			else error(res);
+		}
+	});
+}
 
 function testGetProducts() {
 

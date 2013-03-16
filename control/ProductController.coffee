@@ -18,7 +18,7 @@ module.exports = (Product) =>
     description = req.body.description
     size = req.body.size
     barcode = req.body.barcode
-    barcode = "0#{barcode}" if barcode?.length is 12
+#    barcode = "0#{barcode}" if barcode?.length is 12
     
     Product.getProductById product_id, (err, product) =>
       return res.json {error: true, message: err.message}, 500 if err?
@@ -55,7 +55,7 @@ module.exports = (Product) =>
 	getProduct: (req, res) =>
 		barcode = req.params.barcode
 		#We will store all of our barcodes as 13 digit codes so if they are only 12 add the leading 0
-		barcode = "0#{barcode}" if barcode.length is 12
+#		barcode = "0#{barcode}" if barcode.length is 12
 		Product.getProduct barcode, (err, product) =>
 			return res.json {error: true, message: err.message}, 500 if err?
 			return findProduct barcode, res if not product?
@@ -108,26 +108,22 @@ errors = ()->
 		code: 409
 
 base = ()-> [
-      'product_id'
-      'user_id'
-      'name'
-      'size'
-      'points'
-      'barcode'
-      'last_update'
-      'description'
-  ]
+	'product_id'
+	'user_id'
+	'name'
+	'size'
+	'points'
+	'barcode'
+	'last_update'
+	'description'
+]
 
 normalize = (product) ->
 	result = {}
 	fields = base()
 	for key in fields
-		if product[key]?
-        result[key] = product[key]
-	for key in fields
-		if product[key]?
-        result[key] = product[key]
-    else if key is 'product_id' and product._id?
-        result[key] = product._id
-	
-  return result
+		if key is 'product_id' and product._id?
+			result[key] = product._id
+		else if product[key]?
+			result[key] = product[key]
+	return result
