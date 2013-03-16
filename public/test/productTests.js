@@ -101,15 +101,15 @@ function randomTest() {
 										deepEqual(getResult, expectedUpdate, "Get product");
 										
 									}
-									else error(res);
+									else error(res, "Get product failed");
 								}
 							});
 						}
-						else error(res)
+						else error(res, "Update product failed")
 					}
 				});
 			}
-			else error(res);
+			else error(res, "Create product failed");
 		}
 	});
 }
@@ -202,7 +202,7 @@ function testErrors() {
 		data: product,
 		complete: function (res) {
 			if(res.status == 404) ok(true, "Product not found error successfully thrown");
-			else error(res);
+			else error(res, "Updating not existing product test should have returned 404 error");
 		}
 	});
 	
@@ -234,7 +234,7 @@ function testErrors() {
 		data: { barcode: randomBarcode, description: "First description" },
 		complete: function (res) {
 			if(res.status == 200) ok(true, "Created product");
-			else error(res);
+			else error(res, "Error creating product");
 			
 			var existingProduct = { barcode: randomBarcode, description: "A product that already exists and shouldn't be added" }
 			
