@@ -4,6 +4,7 @@ test("Products", function () {
 //	testGetProducts();
 //	testCreateProducts();
 	randomizedTests();
+	testErrors();
 });
 
 function removeSomeAttributes(product) {
@@ -186,6 +187,66 @@ function testCreateProducts() {
 				deepEqual(result, newProduct, "Check if product was created");
 			}
 			else error(res);
+		}
+	});
+}
+
+function testErrors() {
+	var product = {
+		name: "error product"
+	}
+
+	$.ajax({
+		url: "/products/321321321321",
+		type: "put",
+		data: product,
+		complete: function (res) {
+			if(res.status == 404) ok(true, "Product not found error successfully thrown");
+			else error(res);
+		}
+	});
+	
+	$.ajax({
+		url: "/products",
+		type: "post",
+		data: product,
+		complete: function (res) {
+			if(res.status == 409) ok(true, "Barcode required error successfully thrown");
+			else ok(false, "A product without a barcode was allowed to be created");
+		}
+	});
+	
+	$.ajax({
+		url: "/products",
+		type: "post",
+		data: {},
+		complete: function (res) {
+			if(res.status == 409) ok(true, "Barcode required error successfully thrown");
+			else ok(false, "A product without a barcode was allowed to be created");
+		}
+	});
+	
+	var randomBarcode = randomNumberString(6, 8);
+	
+	$.ajax({
+		url: "/products",
+		type: "post",
+		data: { barcode: randomBarcode, description: "First description" },
+		complete: function (res) {
+			if(res.status == 200) ok(true, "Created product");
+			else error(res);
+			
+			var existingProduct = { barcode: randomBarcode, description: "A product that already exists and shouldn't be added" }
+			
+			$.ajax({
+				url: "/products",
+				type: "post",
+				data: existingProduct,
+				complete: function (res) {
+					if(res.status == 409) ok(true, "Reject creating of existing product");
+					else error(res, "The creation of a product with a duplicate barcode did not return error");
+				}
+			});
 		}
 	});
 }

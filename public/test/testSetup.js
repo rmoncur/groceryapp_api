@@ -14,8 +14,8 @@ $(document).ajaxComplete(function () {
 	start();
 });
 
-function error(response) {
-	ok(false, response.status + " | " + response.responseText);
+function error(response, extraMessage) {
+	ok(false, response.status + " | " + response.responseText + " | " + extraMessage);
 }
 
 function randomNumber(lower, upper) {
