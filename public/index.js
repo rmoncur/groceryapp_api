@@ -13,11 +13,57 @@
 
 module = angular.module("grocery", []);
 
-module.controller('TodoController', function ($scope, $navigate,$waitDialog,$http){
+module.controller('TodoController', function ($scope,$navigate,$waitDialog,$http){
 	
-	$scope.user = {};
-	$scope.lookup = [{"name":"Item #1"},{"name":"Item #2"},{"name":"Item #3"}]
-	$scope.leaderboard = {"monthly":[{"name":"John Smith","points":142},{"name":"Jefferson","points":203}],"overall":[]}
+	$scope.host = "";
+	
+	//Dashboard Data
+	$scope.user = {		
+		//Have these
+		email: "robmonc@gmail.com",
+		token: "86c966fa-ac5d-4d93-b0a6-436a41e5d7f6-528-c5-fb2d0ad649",
+		user_id: "513f662d20d0a0b03a000005",
+		username: "robmoncur",		 
+		
+		//Still need these guys
+		points: 12042,
+		img:'http://www.gravatar.com/avatar/' + md5("robmonc@gmail.com"),		
+		location:"Orem,Utah, United States",
+		level:{
+			level:12,
+			progress:21.0,			
+			leveluppoints:25.0
+		},
+		itemsreported:2132,
+		storesvisited:12
+	};	
+	
+	$scope.reported = [
+		{"name":"Reported Item 1","price":1.42},
+		{"name":"Reported Item 2","price":1.69},	
+	]
+	$scope.stores = [
+		{"name":"Maceys"},
+		{"name":"Smiths"},		
+	]
+		
+	//Leaderboard Data
+	$scope.leaderboard = {
+		"monthly":{
+			"users":[{"name":"John Smith","points":142},{"name":"Jefferson","points":203}],
+			"me":{
+				"points":204,
+				"rank":4
+			}
+		},
+		"overall":{
+			"users":[{"name":"John Smith","points":142},{"name":"Jefferson","points":203}],
+			"me":{
+				"points":1422,
+				"rank":23
+			}
+		}
+	}
 	
 	//Registration/login data
 	$scope.regdata = {};
@@ -27,8 +73,28 @@ module.controller('TodoController', function ($scope, $navigate,$waitDialog,$htt
 	$scope.location = {"lat":40.2387,"lon":-111.658};
 	$scope.storesNearby = [];
 	$scope.selectedStore = {};
-	$scope.report = {"barcode":"051000013477","price":"1.52","img":"http://cdn1.iconfinder.com/data/icons/BRILLIANT/education_icons/png/400/teachers_day.png","name":"Apple"}
+	$scope.report = {
+		barcode:"051000013477",
+		price:"1.52",
+		img:"http://cdn1.iconfinder.com/data/icons/BRILLIANT/education_icons/png/400/teachers_day.png"
+		,name:"Granny Smith Apple"
+		,units_abrev:"gal."
+		,units:"gallons"
+		,size:4.4
+	}
 	
+	//Product Data
+	$scope.lookup = [{"name":"Item #1"},{"name":"Item #2"},{"name":"Item #3"},{"name":"Item #4"}];
+	$scope.product = {
+		name:"Campbell's Cheese Soup",
+		description:"This is the most delicious soup ever",
+		size:"14",
+		units:"ounces",
+		units_abrev:"oz.",
+		numReports:32,
+	};
+	
+	// ----- Methods ----- //
 	
 	$scope.start = function(){
 		navigator.geolocation.getCurrentPosition($scope.myloc);
@@ -139,6 +205,15 @@ module.controller('TodoController', function ($scope, $navigate,$waitDialog,$htt
 	$scope.readItem = function(){
 		console.log("Sending",$scope.report);
 		
+		var barcode = $scope.report.barcode;
+		
+		//alert( typeof barcode );
+		
+		if( $scope.report.barcode.length != 8 && $scope.report.barcode.length != 12 ){ 	
+			//alert("UPC Length must be 8 or 12 = " + $scope.report.barcode.length);
+			//return;
+		}
+		
 		$.ajax({
 			type:"GET",
 			processData: true,
@@ -152,70 +227,83 @@ module.controller('TodoController', function ($scope, $navigate,$waitDialog,$htt
 				$scope.$apply();
 			},
 			error: function(){
-				alert("Error Reading Item");	
+				//alert("Error Reading Item");	
 			}
 		});
 			
+	}
+	
+	//Reporting an item
+	$scope.reportItem = function(){
+		$scope.createProduct();
 	}
 	
 	//Reporting a new item
 	$scope.createProduct = function(){
-		console.log("Sending",$scope.report);
-		
+				
 		//Getting the data to create the product
-		var mydata = {
-			"barcode": $scope.report.barcode,       //required
-			"name": $scope.report.name,             //optional
-			"size": "N/A",                          //optional
-			"description": $scope.report.barcode    //optional
+		var mydata = {			
+			barcode: $scope.report.barcode,       //required
+			name: $scope.report.name,             //optional
+			size: {
+				amount: $scope.report.size,       //optional
+				units: $scope.report.units,       //optional
+			},
+			description: $scope.report.description//optional
 		};
+		
+		console.log("Creating a Product",mydata);
 		
 		//Sending the request
 		$.ajax({
 			type:"POST",
-			processData: true,
-			data:{},
+			data:JSON.stringify(mydata),
 			url: '/products',
 			success: function(data,ajax,xhr){
-				console.log("Success Product",data,ajax,xhr);
+				console.log("Success Creating Product",data,ajax,xhr);
+				$scope.report.product_id = data.product_id;
+				console.log("Report Data",$scope.report);
 				//$scope.report.description = data.description;
 				$scope.$apply();
+				
+				$scope.createPurchase();
 			},
 			error: function(){
-				alert("Error Creating Product");	
+				//alert("Error Creating Product");	
 			}
 		});
 			
 	}
 	
 	//Reporting a new item
-	$scope.createPurchase = function(){
-		console.log("Sending",$scope.report);
+	$scope.createPurchase = function(){		
 		
 		var mydata = {
-			"user_id": $scope.user.user_id,      //required
+			"user_id": $scope.user.user_id,      		//required
 			"store_id": $scope.selectedStore.store_id,	//required
-			"items": [{                         //optional
-				"product_id": "3",              //required
-				"price": 12.30                  //required
+			"items": [{                         		//optional
+				"product_id": $scope.report.product_id, //required
+				"price": $scope.report.price            //required
 			}],
-			"total": 13.07,                     //required
+			"total": $scope.report.price,                     //required
 			//"purchaseDate": "05/30/2012"        //optional, defaults to now
 		};
 		
+		console.log("Creating a Purchase",mydata);
+		
 		$.ajax({
 			type:"POST",
-			processData: true,
-			data:{},
-			url: '/products/' + $scope.report.barcode,
+			data:JSON.stringify(mydata),
+			url: '/purchases/',
 			success: function(data,ajax,xhr){
-				console.log("Success Product",data,ajax,xhr);
+				console.log("Success Creating Purchase",data,ajax,xhr);
 				$scope.report.description = data.description;
 				//$scope.storesNearby = data;
 				//$scope.selectedStore = $scope.storesNearby[0];
 				$scope.$apply();
 			},
 			error: function(){
+				console.log('Error creating a purchase');
 				alert("Error");	
 			}
 		});
