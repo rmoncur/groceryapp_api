@@ -49,6 +49,8 @@ ProductController = ProductControllerModel Product
 Purchase = PurchaseModel db
 PurchaseController = PurchaseControllerModel Purchase
 
+StoresController = require('./control/StoresController')()
+
 # This is the function that creates the server.
 # We will define endpoints and connect them up to 
 # controllers here.
@@ -96,6 +98,9 @@ exports.createServer = ->
   app.delete '/users/:user_id', (req, res) ->
     UserController.authenticateUser req, res, (user)=>
       UserController.deleteUser req, res
+
+  app.get '/users/:user_id/purchases', (req, res) ->
+    PurchaseController.getPurchasesForUser req, res
 
   ### Tag Endpoints ###
 
@@ -158,14 +163,48 @@ exports.createServer = ->
   app.post '/purchases', (req, res) ->
     PurchaseController.createPurchase req, res
     
-  app.get '/purchases/:user_id', (req, res) ->
-    PurchaseController.getPurchasesForUser req, res
+  app.get '/purchases/:purchase_id', (req, res) ->
+    PurchaseController.getPurchase req, res
     
   app.delete '/purchases/:purchase_id', (req, res) ->
     PurchaseController.deletePurchase req, res
     
   app.put '/purchases/:purchase_id', (req, res) ->
     PurchaseController.updatePurchase req, res
+    
+  # ITEMS #
+  app.put '/items/:item_id', (req, res) ->
+    PurchaseController.updateItem req, res
+    
+  app.delete '/items/:item_id', (req, res) ->
+    PurchaseController.deleteItem req, res
+    
+  app.post '/purchases/:purchase_id/items', (req, res) ->
+    PurchaseController.addItemToPurchase req, res
+
+
+
+  # STORES #
+  app.get '/stores/nearby', (req, res)->
+    StoresController.getNearbyStores req, res
+
+  app.get '/stores/closest', (req, res)->
+    StoresController.getClosestStore req, res
+
+  app.get '/stores/here', (req, res)->
+    StoresController.getAtTheStore req, res
+
+  app.get '/stores/my', (req, res)->
+    StoreController.getMyStores req, res
+
+
+
+  app.post '/event/register', (req, res)->
+    res.json {code : 200, message : "OK"}
+
+  app.delete '/event/register', (req, res)->
+    res.json {code : 200, message : "Deleted"}
+
 
   # final return of app object
   # in coffeescript everything always returns a value, and functions return the last value computed.
@@ -174,7 +213,7 @@ exports.createServer = ->
 
 #This is where we really start our server
 if module == require.main
-  PORT = 80
+  PORT = 8000
   app = exports.createServer()
   app.listen PORT #This is the port we are listening on.
   console.log "Running Grocery App Service on port: " + PORT #This is just some output to show that the server is working
