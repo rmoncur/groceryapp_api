@@ -8,11 +8,18 @@ fix the deficiency.
 
 ## Navigation
 * [Tags](#tags)
-	* [Create](#create) - **POST** /tags
+	* [Create](#create) - **POST** /users/:user_id/tags
+	* [Get](#get) - **GET** /users/:user_id/tags/?tag_id=tag_id
+	* [GetAll](#getall) - **GET** /users/:user_id/tags/
+	* [Update](#update) - **PUT** /users/:user_id/tags/:tag_id
+	* [Delete](#delete) - **DELETE** /users/:user_id/tags/:tag_id
+	* [Search](#search) - **GET** /users/:user_id/tags/?search=search_string
+
+## Tags
 
 #### Create
 
-    POST /tags
+    POST /users/:user_id/tags
 
 ###### Example Request:
 {
@@ -21,4 +28,8 @@ fix the deficiency.
 	"category" : "dairy",
 	"related" : [{"name" : "cheese"}],
 	"compliment" : [{"name" : "cereal"},{"name" : "cookies"}]
+}
+###### Expected Result:
+{
+	
 }
