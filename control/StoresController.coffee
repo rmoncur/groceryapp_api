@@ -81,7 +81,9 @@ normalize = (stores)->
 			store.state = store.location.state
 			store.country = store.location.country
 			store.phone = store.contact.phone
+			store.store_id = store.id
 
+			delete store.id
 			delete store.location
 			delete store.contact
 

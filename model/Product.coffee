@@ -10,12 +10,15 @@ module.exports = (db) ->
 	ProductSchema = new Schema {
 		user_id: String,
 		name: String,
-		size: String,
+		size: { 
+			amount: Number,
+			unit: String
+		},
 		description: String,
 		barcode: String,
 #		tags: [TAG],
 #		accounts: [ACCOUNT],
-		lastUpdate: Date
+		last_update: Date
 	}
 	
 	ProductSchema.statics.getProduct = (barcode, cb)->

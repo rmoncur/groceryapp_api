@@ -102,6 +102,9 @@ exports.createServer = ->
     UserController.authenticateUser req, res, (user)=>
       UserController.deleteUser req, res
 
+  app.get '/users/:user_id/purchases', (req, res) ->
+    PurchaseController.getPurchasesForUser req, res
+
   ### Tag Endpoints ###
   #Get all Tags and those associated with the user_id
   app.get '/tags/:user_id', (req, res) ->
@@ -136,14 +139,24 @@ exports.createServer = ->
   app.post '/purchases', (req, res) ->
     PurchaseController.createPurchase req, res
     
-  app.get '/purchases/:user_id', (req, res) ->
-    PurchaseController.getPurchasesForUser req, res
+  app.get '/purchases/:purchase_id', (req, res) ->
+    PurchaseController.getPurchase req, res
     
   app.delete '/purchases/:purchase_id', (req, res) ->
     PurchaseController.deletePurchase req, res
     
   app.put '/purchases/:purchase_id', (req, res) ->
     PurchaseController.updatePurchase req, res
+    
+  # ITEMS #
+  app.put '/items/:item_id', (req, res) ->
+    PurchaseController.updateItem req, res
+    
+  app.delete '/items/:item_id', (req, res) ->
+    PurchaseController.deleteItem req, res
+    
+  app.post '/purchases/:purchase_id/items', (req, res) ->
+    PurchaseController.addItemToPurchase req, res
 
 
 
@@ -176,7 +189,7 @@ exports.createServer = ->
 
 #This is where we really start our server
 if module == require.main
-  PORT = 80
+  PORT = 8000
   app = exports.createServer()
   app.listen PORT #This is the port we are listening on.
   console.log "Running Grocery App Service on port: " + PORT #This is just some output to show that the server is working

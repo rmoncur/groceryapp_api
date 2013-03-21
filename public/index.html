@@ -5,19 +5,57 @@
 <title>Grocery App</title>
 <link href="http://code.jquery.com/mobile/1.3.0-beta.1/jquery.mobile-1.3.0-beta.1.min.css" rel="stylesheet" type="text/css" />
 <script src="http://code.jquery.com/jquery-1.7.1.min.js" type="text/javascript"></script>
-<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js" type="text/javascript"></script>
+<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.js" type="text/javascript"></script>
 <script type="text/javascript" src="angular.js"></script>
 <script type="text/javascript" src="jquery-mobile-angular-adapter.js"></script>
 <script type="text/javascript" src="index.js"></script>
+<script type="text/javascript" src="md5.js"></script>
 <style>
+
+/* Dashboard */
+#dash_level_points{ font-size:10px; color:gray; text-align:right;}
+.points_block{text-align:center; }
+#avatar{ margin:0 5px 0 0; }
 .progressbar{ border:1px solid gray; width:100%; height:15px; }
-.progress{ background-color:green; width:45%; height:15px; }
+.progress{ background-color:green; height:15px; }
+
+.points-grid{margin-top:5px;}
+.points_label{font-size:11px; }
+.user_username{font-weight:bold;}
+.user_location{font-weight:bold; font-size:12px;}
+.user_points{font-weight:bold; }
+
+/* Lookup Items */
+.high{color:red;}
+.low{color: green;}
+.avg{color:goldenrod;}
+
+</style>
+<style type='text/css'>
+<!--
+	html { background-color: #333; }
+	@media only screen and (min-width: 600px){
+		.ui-page {
+			width: 320px !important;
+			margin: 0 auto !important;
+			position: relative !important;
+			border-right: 5px #666 outset !important;
+			border-left: 5px #666 outset !important;
+		}
+	}
+	
+	.ui-btn-corner-all {
+		-moz-border-radius:   5px
+		-webkit-border-radius:5px
+		border-radius:            5px 
+	}
+-->
 </style>
 </head>
 
-<body ng-app="grocery" ng-controller="TodoController" ng-init="start()">
+<body ng-app="grocery" ng-controller="TodoController" ng-init="getStoresNearby()">
 
-<!-- LOGIN -->
+<!-- LOGIN #login -->
 <div data-role="page" id="login">
 	<div data-role="header">
 		<h1>Login</h1>
@@ -36,17 +74,17 @@
 		</form>
 	</div>
 	<div data-role="footer">
-		<div data-role="controlgroup" data-type="horizontal" >
-			<a data-role="button" href="#leaderboard">Lead</a>
+		<div data-role="controlgroup" data-type="horizontal"  >
+			<a data-role="button" href="#monthleaderboard">Lead</a>
 			<a data-role="button" href="#scan">Scan</a>	
 			<a data-role="button" href="#dashboard">Dash</a>
-			<a data-role="button" href="#report">Report</a>	
+			<a data-role="button" href="#inputitem">Report</a>	
 			<a data-role="button" href="#lookup">Lookup</a>			
 		</div>
 	</div>
 </div>
 
-<!-- REGISTRATION -->
+<!-- REGISTRATION #registration -->
 <div data-role="page" id="registration">
 	<div data-role="header">
 		<h1>Registration</h1>
@@ -68,175 +106,370 @@
 	</div>
 	<div data-role="footer">
 		<div data-role="controlgroup" data-type="horizontal" >
-			<a data-role="button" href="#leaderboard">Lead</a>
+			<a data-role="button" href="#monthleaderboard">Lead</a>
 			<a data-role="button" href="#scan">Scan</a>	
 			<a data-role="button" href="#dashboard">Dash</a>
-			<a data-role="button" href="#report">Report</a>	
+			<a data-role="button" href="#inputitem">Report</a>	
 			<a data-role="button" href="#lookup">Lookup</a>			
 		</div>
 	</div>
 </div>
 
-<!-- Dashboard -->
+<!-- Dashboard #dashboard -->
 <div data-role="page" id="dashboard" >
 	<div data-role="header">
 		<h1>Dashboard</h1>
 	</div>
-	<div data-role="content">
-	
-		<div class="ui-grid-a">
-			<div class="ui-block-a">
-				<img src="https://en.gravatar.com/avatar/d8671fa8a4476b40347fc63dde0d2828"  />
-			</div>
-			<div class="ui-block-b">
-				{{user.username}}<br />
-				{{user.location}}<br />
-				<div class="ui-grid-a">
-					<div class="ui-block-a"><b>{{user.points}}</b></div>
-					<div class="ui-block-b">{{user.level}}</div>
-				</div>
-			</div>		
-		</div>
+	<div data-role="content">	
+		<table border="0" width="100%">
+			<tr>
+				<td><img id="avatar" src="https://en.gravatar.com/avatar/d8671fa8a4476b40347fc63dde0d2828" ng-src="{{user.img}}"  /></td>
+				<td>
+					<div class="user_username">{{user.username}}</div>
+					<div class="user_location">{{user.location}}</div>
+					<div class="ui-grid-a points-grid">
+						<div class="ui-block-a points_block" style="border-right:1px solid gray;">
+							<div class="points_label">Points</div>
+							<div class="user_points">{{user.points}}</div>
+						</div>
+						<div class="ui-block-b points_block">
+							<div class="points_label">Level</div>
+							<div class="user_points">{{user.level.level}}</div>
+						</div>
+					</div>
+					<div id="dash_level_points">{{user.level.progress}}/{{user.level.leveluppoints}} points for next level</div>
+				</td>
+			</tr>
+		</table>
 		<div class="progressbar">
-			<div class='progress'></div>	
+			<div class='progress' style="width:{{100*user.level.progress/user.level.leveluppoints}}%"></div>	
 		</div>
 		<ul data-role="listview" data-inset="true">
-			<li>{{user.leaderboard.rank}}<a href="#leaderboard">Leaderboard Rank</a></li>
-			<li>{{user.leaderboard.rank}}<a href="#">Overall Rank</a></li>
+			<li><a href="#monthleaderboard">({{leaderboard.monthly.me.rank}}) Monthly Rank</a></li>
+			<li><a href="#overallleaderboard">({{leaderboard.overall.me.rank}}) Overall Rank</a></li>
 		</ul>
 		My History
 		<ul data-role="listview" data-inset="true">
-			<li>{{user.ireported}}<a href="#">Items Reported</a></li>
-			<li>{{user.svisited}}<a href="#">Stores Visited</a></li>
+			<li><a href="#itemsreported" ng-click="getUserPurchases()">({{user.itemsreported}}) Items Reported</a></li>
+			<li><a href="#storesvisited">({{user.storesvisited}}) Stores Visited</a></li>
 		</ul>
 	
 	</div>
 	<div data-role="footer">		
 		<div data-role="controlgroup" data-type="horizontal" >
-			<a data-role="button" href="#leaderboard">Lead</a>
+			<a data-role="button" href="#monthleaderboard">Lead</a>
 			<a data-role="button" href="#scan">Scan</a>	
 			<a data-role="button" href="#dashboard">Dash</a>
-			<a data-role="button" href="#report">Report</a>	
+			<a data-role="button" href="#inputitem">Report</a>	
 			<a data-role="button" href="#lookup">Lookup</a>			
 		</div>		
 	</div>
 </div>
 
-<!-- Leaderboard -->
-<div data-role="page" id="leaderboard">
+<!-- Items Reported List #itemsreported -->
+<div data-role="page" id="itemsreported" data-add-back-btn="true" >
 	<div data-role="header">
-		<h1>Leaderboard</h1>
+		<h1>Items Reported</h1>
+	</div>
+	<div data-role="content">
+		<ul data-role="listview" ng-show="reported.length">
+			<li style="text-align:center;">{{reported.length}} Items Reported</li>
+			<li ng-repeat="item in reported">
+				<a href="#">{{item.name}}
+					<span class="ui-li-count">${{item.price}}</span>
+				</a>
+			</li>
+		</ul>		
+		<div id="nopurchases" ng-hide="reported.length">No Items Reported</div>
+	</div>
+	<div data-role="footer">		
+		<div data-role="controlgroup" data-type="horizontal" >
+			<a data-role="button" href="#monthleaderboard">Lead</a>
+			<a data-role="button" href="#scan">Scan</a>	
+			<a data-role="button" href="#dashboard">Dash</a>
+			<a data-role="button" href="#inputitem">Report</a>	
+			<a data-role="button" href="#lookup">Lookup</a>			
+		</div>		
+	</div>
+</div>
+
+<!-- Stores Visited List #storesvisited -->
+<div data-role="page" id="storesvisited" data-add-back-btn="true" >
+	<div data-role="header">
+		<h1>Stores Visited</h1>
+	</div>
+	<div data-role="content">
+		<ul data-role="listview" ng-show="stores.length">
+			<li style="text-align:center;">{{stores.length}} Stores Visited</li>
+			<li ng-repeat="store in stores"><a href="#">{{store.name}}</a></li>
+		</ul>
+		<div id="nopurchases" ng-hide="stores.length">No stores visited yet!</div>
+	</div>
+	<div data-role="footer">		
+		<div data-role="controlgroup" data-type="horizontal" >
+			<a data-role="button" href="#monthleaderboard">Lead</a>
+			<a data-role="button" href="#scan">Scan</a>	
+			<a data-role="button" href="#dashboard">Dash</a>
+			<a data-role="button" href="#inputitem">Report</a>	
+			<a data-role="button" href="#lookup">Lookup</a>			
+		</div>		
+	</div>
+</div>
+
+<!-- Month Leaderboard #monthleaderboard -->
+<div data-role="page" id="monthleaderboard">
+	<div data-role="header">
+		<h1>Monthly Leaderboard</h1>
 	</div>
 	<div data-role="content">
 		<div class="ui-grid-a">
-			<div class="ui-block-a">My Rank #14</div>
+			<div class="ui-block-a">My Rank #{{leaderboard.monthly.me.rank}}</div>
 			<div class="ui-block-b">+15 to level up</div>
 		</div>
 		<hr />
 		<ul data-role="listview">
-			<li><img src="http://25.media.tumblr.com/avatar_12e428a5a556_128.png" width="40" height="40" />Jonathan42</li>
-			<li>
-				<img src="http://25.media.tumblr.com/avatar_824db6d89e00_128.png" width="40" height="40" />MittR
-			</li>
-			<li><a href="#">Page</a></li>
-			<li><a href="#">Page</a></li>
-		</ul>
-		
+			<li ng-repeat="leader in leaderboard.monthly.users"><img class="ui-li-icon" ng-src="http://25.media.tumblr.com/avatar_12e428a5a556_128.png" />#{{$index+1}} - {{leader.name}}</li>			
+		</ul>	
 	</div>
 	<div data-role="footer">
-		<h4>Navigation</h4>
+		<div data-role="controlgroup" data-type="horizontal" >
+			<a data-role="button" href="#monthleaderboard">Lead</a>
+			<a data-role="button" href="#scan">Scan</a>	
+			<a data-role="button" href="#dashboard">Dash</a>
+			<a data-role="button" href="#inputitem">Report</a>	
+			<a data-role="button" href="#lookup">Lookup</a>			
+		</div>
 	</div>
 </div>
 
-<!-- Scan -->
+<!-- Overall Leaderboard #overallleaderboard -->
+<div data-role="page" id="overallleaderboard">
+	<div data-role="header">
+		<h1>Overall Leaderboard</h1>
+	</div>
+	<div data-role="content">
+		<div class="ui-grid-a">
+			<div class="ui-block-a">My Rank #{{leaderboard.overall.me.rank}}</div>
+			<div class="ui-block-b">+15 to level up</div>
+		</div>
+		<hr />
+		<ul data-role="listview">
+			<li ng-repeat="leader in leaderboard.overall.users"><img class="ui-li-icon" ng-src="http://25.media.tumblr.com/avatar_12e428a5a556_128.png" />#{{$index+1}} - {{leader.name}}</li>			
+		</ul>	
+	</div>
+	<div data-role="footer">
+		<div data-role="controlgroup" data-type="horizontal" >
+			<a data-role="button" href="#monthleaderboard">Lead</a>
+			<a data-role="button" href="#scan">Scan</a>	
+			<a data-role="button" href="#dashboard">Dash</a>
+			<a data-role="button" href="#inputitem">Report</a>	
+			<a data-role="button" href="#lookup">Lookup</a>			
+		</div>
+	</div>
+</div>
+
+<!-- Scan #scan -->
 <div data-role="page" id="scan" data-add-back-btn="true">
 	<div data-role="header">
 		<h1>Scan to Report</h1>
 	</div>
 	<div data-role="content" style="margin:0px;">
 		<img src="http://www.codeupc.net/barcode.jpg" style="width:100%" />
-	<button>Report Item Manually</button>
+		<a data-role="button" href="#inputitem">Report Item Manually</a>
 	</div>
 	<div data-role="footer">
 		<h4>Navigation</h4>
 	</div>
 </div>
 
-<!-- Input Item -->
-<div data-role="page" id="report" data-add-back-btn="true">
+<!-- Nearby Stores #nearbyStores -->
+<div data-role="page" id="nearbyStores" data-add-back-btn="true">
+	<div data-role="header">
+		<h1>Select Nearest Store</h1>
+	</div>
+	<div data-role="content">
+		<ul data-role="listview" id="nearbyStoresList">
+			<li ng-repeat="store in storesNearby">
+				<a ng-click="selectStore(store)" href="#inputitem">{{store.name}} ({{store.city}},{{store.state}})</a>
+			</li>
+		</ul>
+	</div>
+</div>
+
+<!-- Input Item #inputitem -->
+<div data-role="page" id="inputitem" data-add-back-btn="true">
 	<div data-role="header">
 		<h1>Report Item</h1>
 	</div>
 	<div data-role="content">
-		<ul data-role="listview">
-			<li><a href="#">Smiths Grocery Store</a></li>
-		</ul>
-		<br />		
-		<div data-role="fieldcontain">			
-			<div class="ui-grid-a">
-				<div class="ui-block-a">
-					<div data-role="fieldcontain">
-						<label for="textinput2">UPC:</label>
-						<input type="text" name="textinput2" id="textinput2" value=""  />
-					</div>	
-				</div>
-				<div class="ui-block-b">
-					<br />
-					<label for="b2">&nbsp;</label>
-					<input name="b2" type="button" value="Lookup" />
-				</div>
-			</div>
-		</div>
+		<ul data-role="listview" ng-show="storesNearby.length">
+			<li><a ng-click="myLoc()" href="#nearbyStores" >
+				<img src="http://3.bp.blogspot.com/_1nVKvknoYl0/SxKtCkm0D-I/AAAAAAAAApM/EqIo3DsA0Hw/s320/11396.png" class="ui-li-icon"  /> {{selectedStore.name}} ({{selectedStore.city}},{{selectedStore.state}})
+			</a></li>
+		</ul><br />
+		
+		<table>
+			<tr>
+				<td><b>UPC</b> </td>
+				<td>
+					<input type="text" name="textinput2" ng-change="readItem();" ng-model="report.barcode" style="width:90%;" placeholder="UPC" />
+				</td>
+				<td>
+					<input name="b2" data-mini="true" type="button" ng-click="readItem();" value="Lookup" />
+				</td>
+			</tr>
+		</table>		
 		
 		<table style="border:1px solid gray; width:100%">
 			<tr>
-				<td><img src="http://files.softicons.com/download/system-icons/apple-logo-icons-by-thvg/png/512/Apple%20logo%20icon%20-%20Aluminum.png" width="50" /></td>
-				<td>Name</td>
+				<td width="22%"><img src="" ng-src="{{report.img}}" width="50" /></td>
+				<td width="66%" valign="top">
+					<div style="font-weight:bold;">{{report.name}}</div>
+					<div style="font-size:9px; ">{{report.description}}</div>
+					<div style="font-size:12px; color:gray;">
+						{{report.size}} {{report.units_abrev}}
+						
+					</div>
+					<div style="font-size:11px;">
+						H: $<span class="high">3.23</span>
+						L: $<span class="low">1.34</span>
+						Avg: $<span class="avg">$2.45</span>
+					</div>
+				</td>
+				<td width="12%">
+					<a href="#inputItemInfo" style=" text-decoration:none;"><span class="ui-icon ui-icon-arrow-r ui-icon-shadow" style="display:block;">&nbsp;</span></a>
+				</td>
 			</tr>
 		</table>
 		<div class="ui-grid-a">
 			<div class="ui-block-a">
 				<div data-role="fieldcontain">
-					<label for="textinput2">Text Input:</label>
-					<input type="text" name="textinput2" id="textinput2" value=""  />
+					<label for="textinput2">Price</label>
+					<input type="text" value="" ng-model="report.price"  />
 				</div>			
 			</div>
 			<div class="ui-block-b">
 				<div data-role="fieldcontain">
 					
 					<label for="flipswitch">Purchased?</label>
-					<select name="flipswitch" id="flipswitch" data-role="slider">
+					<select name="flipswitch" id="flipswitch" data-role="slider" ng-option="report.purchased">
 						<option value="off">Off</option>
 						<option value="on">On</option>
 					</select>
 				</div>
 			</div>
 			<br style="clear:both;" />
-			<a href="#" data-role="button">Report Item</a>
+			<a data-role="button" ng-click="reportItem()">Report Item</a>
+			{{report.product_id}}
+			<a data-role="button" ng-click="createPurchase()">Create Purchase</a>
 		</div>
 		
 		
 	</div>
 	<div data-role="footer">
 		<div data-role="controlgroup" data-type="horizontal" >
-			<a data-role="button" href="#leaderboard">Lead</a>
+			<a data-role="button" href="#monthleaderboard">Lead</a>
 			<a data-role="button" href="#scan">Scan</a>	
 			<a data-role="button" href="#dashboard">Dash</a>
-			<a data-role="button" href="#report">Report</a>	
+			<a data-role="button" href="#inputitem">Report</a>	
 			<a data-role="button" href="#lookup">Lookup</a>			
 		</div>	
 	</div>
 </div>
 
-<!-- Input Item -->
+<!-- Input Item Info #inputItemInfo -->
+<div data-role="page" id="inputItemInfo" data-add-back-btn="true">
+	<div data-role="header">
+		<h1>Input Item Info</h1>
+	</div>
+	<div data-role="content">		
+		<table>
+			<tr>
+				<td>
+					<img src="http://www.candygalaxy.com/product_images/uploaded_images/Gumballs.jpg" width="120" height="120"  />
+				</td>
+				<td valign="top">
+					<div><input type="text" ng-model="report.name" /></div>
+					<div>
+						<div>UPC</div>
+						<div>152512542042</div>
+					</div>				
+				</td>
+			</tr>
+			<tr>
+				<td><input type="text" ng-model="report.size" style="width:90%;" /></td>
+				<td>
+					<select ng-select="report.units">
+						<option>Gallons</option>
+						<option>Ounces</option>
+						<option>Kilograms</option>
+					</select>
+				</td>
+			</tr>
+		</table>
+		
+		<ul data-role="listview" data-inset="true">
+			<li><a href="#">45 Times Reported</a></li>
+			<li><a href="#">$1.23 Average Price</a></li>
+			<li><a href="#">$3.34 High Price</a></li>
+			<li><a href="#">$1.23 High Price</a></li>
+		</ul>
+			
+	</div>
+	<div data-role="footer">
+		<div data-role="controlgroup" data-type="horizontal" >
+			<a data-role="button" href="#monthleaderboard">Lead</a>
+			<a data-role="button" href="#scan">Scan</a>	
+			<a data-role="button" href="#dashboard">Dash</a>
+			<a data-role="button" href="#inputitem">Report</a>	
+			<a data-role="button" href="#lookup">Lookup</a>			
+		</div>	
+	</div>
+</div>
+
+<!-- Lookup Item #lookup -->
 <div data-role="page" id="lookup" data-add-back-btn="true">
 	<div data-role="header">
 		<h1>Lookup Item</h1>
 	</div>
-	<div data-role="content">
+	<div data-role="content">		
+		<input type="search" placeholder="Search for an item"  />
+		<br />
 		<ul data-role="listview">
-			<li ng-repeat="items in lookup"><a href="#"><img src="http://www.veryicon.com/icon/png/System/Candied%20Apples/Candy%20Apple%20Green%202.png" alt="Buy" class="ui-li-icon">{{items.name}}</a></li>			
-		</ul>		
+			<li ng-repeat="item in lookup"><a href="#product">
+				<img src="http://www.veryicon.com/icon/png/System/Candied%20Apples/Candy%20Apple%20Green%202.png" alt="Buy" class="ui-li-icon">
+				{{item.name}}
+				<p style="margin-top:3px;">
+					<b>{{item.size}} {{item.units_abrev}} </b>
+					H: $<span class="high">3.23</span>
+					L: $<span class="low">1.34</span>
+					Avg: $<span class="avg">$2.45</span>
+				</p>
+			</a></li>			
+		</ul>
+	</div>
+	<div data-role="footer">
+		<h4>Footer</h4>
+	</div>
+</div>
+
+<!-- Lookup Item #product -->
+<div data-role="page" id="product" data-add-back-btn="true">
+	<div data-role="header">
+		<h1>Product View</h1>
+	</div>
+	<div data-role="content">		
+		<table>
+			<tr>
+				<td><img ng-src="{{user.img}}" /></td>
+				<td>
+					{{product.name}}<br />
+					{{product.size}} {{product.units}}<br />
+					{{product.numReports}} Times Reported
+				</td>
+			</tr>
+		</table>
+		
 	</div>
 	<div data-role="footer">
 		<h4>Footer</h4>
