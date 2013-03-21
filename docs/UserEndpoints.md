@@ -9,6 +9,7 @@ fix the deficiency.
 ## Navigation
 * [Users](#users)
 	* [Create](#create) - **POST** /users
+	* [Login](#create) - **POST** /users
 	* [Read](#read) - **GET** /users/:user_id
 	* [Update](#update) - **PUT** /users/:user_id
 	* [Delete](#delete) - **DEL** /users/:user_id
@@ -25,13 +26,36 @@ fix the deficiency.
 ###### Example Request:
 {
 	"email": "caseymonc@gmail.com",
+	"password": "p@ssw0rd",
+	"username": "caseymonc"
+}
+###### Expected Result:
+{
+    "email": "casey@i.tv",
+    "token": "4907a3c8-4181-4337-993c-4f482c908378-d63-3b-167c5c0787",
+    "username": "caseymonc",
+    "points": 0,
+    "user_id": "514b82b8137ff3ed63000003"
+}
+###### Error codes: <!-- TODO -->
+
+
+#### Login
+
+    POST /users/login
+
+###### Example Request:
+{
+	"email": "caseymonc@gmail.com",
 	"password": "p@ssw0rd"
 }
 ###### Expected Result:
 {
-	"email" : "caseymonc@gmail.com",
-	"user_id": "afffe332234222",
-	"token": "adba0d-eee4535-345252-abc4434"
+    "email": "casey@i.tv",
+    "token": "de5f10ca-1cd9-419a-815a-8ea7403d11e8-ab5-e8-48b3684bec",
+    "username": "caseymonc",
+    "points": 0,
+    "user_id": "512fd7f3483483cb0c000003"
 }
 ###### Error codes: <!-- TODO -->
 
@@ -43,9 +67,11 @@ fix the deficiency.
 ###### Example Request:
 ###### Expected Result:
 {
-	"email" : "caseymonc@gmail.com",
-	"user_id": "afffe332234222",
-	"token": "adba0d-eee4535-345252-abc4434"
+    "email": "casey@i.tv",
+    "token": "de5f10ca-1cd9-419a-815a-8ea7403d11e8-ab5-e8-48b3684bec",
+    "username": "caseymonc",
+    "points": 0,
+    "user_id": "512fd7f3483483cb0c000003"
 }
 ###### Error codes: <!-- TODO -->
 

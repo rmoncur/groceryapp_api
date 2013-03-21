@@ -103,12 +103,9 @@ normalize = (user) ->
 	result = {}
 	fields = base()
 	for key in fields
-		if user[key]?
-        result[key] = user[key]
-	for key in fields
-		if user[key]?
-        result[key] = user[key]
-    else if key is 'user_id' and user._id?
+		if key is 'user_id' and user._id?
         result[key] = user._id
+		else if user[key]?
+        result[key] = user[key]
 	
   return result
