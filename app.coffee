@@ -24,7 +24,7 @@ ProductControllerModel = require './control/ProductController'
 
 #This is the User model object.  It will handle putting stuff into the database
 #and will be used mainly by the UserController.
-UserModel = require './model/User'
+UserModel = require './model/User' #grab user file "object"
 TagModel = require './model/Tag'
 PurchaseModel = require './model/Purchase'
 ProductModel = require './model/Product'
@@ -37,8 +37,8 @@ DB = process.env.DB || 'mongodb://localhost:27017/grocery'
 #This is creating a connection to the database
 db = Mongoose.createConnection DB
 
-User = UserModel db
-UserController = UserControllerModel User
+User = UserModel db # create user class.
+UserController = UserControllerModel User #pass class into controller so that we can use the class in the controller
 
 Tag = TagModel db
 TagController = TagControllerModel Tag
@@ -76,8 +76,10 @@ exports.createServer = ->
       res.json user
 
   ### User Endpoints ###
+  
   #GET endpoint for getting user by user_id
   app.get '/users/:user_id', (req, res) ->
+    console.log req.body.user_id
     UserController.authenticateUser req, res, (user)=>
       UserController.getUser req, res
   
@@ -101,24 +103,51 @@ exports.createServer = ->
     PurchaseController.getPurchasesForUser req, res
 
   ### Tag Endpoints ###
-  #Get all Tags and those associated with the user_id
-  app.get '/tags/:user_id', (req, res) ->
-    TagController.getTags req, res
 
+  #Get all Tags and those associated with the user_id
+  app.get '/users/:user_id/tags/', (req, res) ->
+    UserController.authenticateUser req, res, (user)=>
+      console.log req.params
+      console.log req.query
+      if req.query.category_id
+        TagController.getTagsByCategory req, res
+      else if req.query.search
+        TagController.searchTags req, res
+      else if req.query.tag_id
+        TagController.getTag req, res
+      else
+        TagController.getTagsByUser req, res
+
+  #Get all Categories
+  app.get '/users/:user_id/tags/categories/', (req, res) ->
+    TagController.getCategories req, res
+  
+  #Get all Tags in a Category
+  #app.get '/users/:user_id/tags/?category_id=category_id', (req, res) ->
+  #  TagController.getTagsByCategory req, res
+  
+  #Search for Tags
+  app.get '/users/:user_id/tags/?search=search_string', (req, res) ->
+    TagController.searchTags req, res
+  
+  #Get Tag
+  app.get '/users/:user_id/tags/?tag_id=tag_id', (req, res) ->
+    TagController.getTag req, res
+  
   #Post endpoint for creating new tags
-  app.post '/tags' , (req, res) ->
+  app.post '/users/:user_id/tags' , (req, res) ->
     TagController.createTag req, res
 
   #Put endpoint for updating tags
-  app.put '/tags/:user_id', (req, res) ->
+  app.put '/users/:user_id/tags/:tag_id', (req, res) ->
     res.json {success: true, code: 200}
 
   #Delete endpoint for deleting tags
-  app.delete '/tags/:user_id', (req, res) ->
+  app.delete '/users/:user_id/tags/:tag_id', (req, res) ->
     TagController.deleteTag req, res
 
   
-  # PRODUCTS #
+  ### PRODUCTS ###
   app.get '/products/:barcode', (req, res) ->
     ProductController.getProduct req, res
 
@@ -130,7 +159,7 @@ exports.createServer = ->
     ProductController.updateProduct req, res
     
     
-  # PURCHASES #
+  ### PURCHASES ###
   app.post '/purchases', (req, res) ->
     PurchaseController.createPurchase req, res
     
