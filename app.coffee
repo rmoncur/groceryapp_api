@@ -21,6 +21,7 @@ UserControllerModel = require './control/UserController'
 TagControllerModel = require './control/TagController'
 PurchaseControllerModel = require './control/PurchaseController'
 ProductControllerModel = require './control/ProductController'
+SubscriberControllerModel = require './control/SubscriberController'
 
 #This is the User model object.  It will handle putting stuff into the database
 #and will be used mainly by the UserController.
@@ -28,6 +29,7 @@ UserModel = require './model/User'
 TagModel = require './model/Tag'
 PurchaseModel = require './model/Purchase'
 ProductModel = require './model/Product'
+SubscriberModel = require './model/Subscriber'
 
 mongomate = require("mongomate")('mongodb://localhost')
 
@@ -50,6 +52,9 @@ Purchase = PurchaseModel db
 PurchaseController = PurchaseControllerModel Purchase
 
 StoresController = require('./control/StoresController')()
+
+Subscriber = SubscriberModel db
+SubscriberController = SubscriberControllerModel Subscriber
 
 # This is the function that creates the server.
 # We will define endpoints and connect them up to 
@@ -158,10 +163,10 @@ exports.createServer = ->
 
 
   app.post '/event/register', (req, res)->
-    res.json {code : 200, message : "OK"}
+    SubscriberController.addSubscriber req, res
 
   app.delete '/event/register', (req, res)->
-    res.json {code : 200, message : "Deleted"}
+    SubscriberController.removeSubscriber req, res
 
 
   # final return of app object
