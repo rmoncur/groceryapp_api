@@ -33,9 +33,10 @@ module.exports = (Product) =>
       product.size = size if size?
       product.barcode = barcode if barcode?
       product.lastUpdate = new Date
-      product.save()
+      product.save (err) ->
+        return res.json {error: true, message: err.message}, 500 if err?
       
-      res.json normalize(product)
+        res.json normalize(product)
 
 
   createProduct: (req, res) =>
@@ -44,6 +45,10 @@ module.exports = (Product) =>
     description = req.body.description
     barcode = req.body.barcode
     user_id = req.body.user_id
+    
+    price = req.body.price
+    store_id = req.body.store_id
+    
     return response.error errors.BARCODE_REQUIRED, res if not barcode?
     
     Product.getProduct barcode, (err, product)=>
@@ -55,6 +60,11 @@ module.exports = (Product) =>
       product.lastUpdate = new Date
       product.save (err) =>
         return res.send {error: true, message: err.message}, 500 if err?
+        
+        
+#		    if store_id? and price?
+    			
+        
         res.json normalize product
 
   getProduct: (req, res) =>

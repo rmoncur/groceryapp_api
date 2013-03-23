@@ -21,6 +21,7 @@ UserControllerModel = require './control/UserController'
 TagControllerModel = require './control/TagController'
 PurchaseControllerModel = require './control/PurchaseController'
 ProductControllerModel = require './control/ProductController'
+ItemControllerModel = require './control/ItemController'
 SubscriberControllerModel = require './control/SubscriberController'
 
 #This is the User model object.  It will handle putting stuff into the database
@@ -29,6 +30,7 @@ UserModel = require './model/User' #grab user file "object"
 TagModel = require './model/Tag'
 PurchaseModel = require './model/Purchase'
 ProductModel = require './model/Product'
+ItemModel = require './model/Item'
 SubscriberModel = require './model/Subscriber'
 
 mongomate = require("mongomate")('mongodb://localhost')
@@ -50,6 +52,9 @@ ProductController = ProductControllerModel Product
 
 Purchase = PurchaseModel db
 PurchaseController = PurchaseControllerModel Purchase
+
+Item = ItemModel db
+ItemController = ItemControllerModel Item
 
 StoresController = require('./control/StoresController')()
 
@@ -178,14 +183,23 @@ exports.createServer = ->
     PurchaseController.updatePurchase req, res
     
   # ITEMS #
+  app.post '/items', (req, res) ->
+    ItemController.createItem req, res
+
+  app.get '/items/:item_id', (req, res) ->
+    ItemController.getItem req, res
+    
   app.put '/items/:item_id', (req, res) ->
-    PurchaseController.updateItem req, res
-    
-  app.delete '/items/:item_id', (req, res) ->
-    PurchaseController.deleteItem req, res
-    
-  app.post '/purchases/:purchase_id/items', (req, res) ->
-    PurchaseController.addItemToPurchase req, res
+    ItemController.updateItem req, res
+  
+#  app.put '/items/:item_id', (req, res) ->
+#    PurchaseController.updateItem req, res
+#    
+#  app.delete '/items/:item_id', (req, res) ->
+#    PurchaseController.deleteItem req, res
+#    
+#  app.post '/purchases/:purchase_id/items', (req, res) ->
+#    PurchaseController.addItemToPurchase req, res
 
 
 
