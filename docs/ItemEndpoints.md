@@ -22,7 +22,7 @@ fix the deficiency.
 ###### Example Request:
     {
         product:{
-             "product_id": "111111111111121111",     //required - if product_id id included all other fields will be ignored
+             "product_id": "111111111111121111",     //required - if product_id is included all other fields will be ignored
              
              ... or ...
              
