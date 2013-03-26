@@ -1,4 +1,4 @@
-# Product Endpoints
+# Item Endpoints
 ###### Notes:
 This Document is intended to be comprehensive. It is to
 be used as an API development guide as well as a client implementation guide.
