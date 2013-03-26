@@ -21,15 +21,7 @@ fix the deficiency.
 
 ###### Example Request:
     {
-        product:{
-             "product_id": "111111111111121111",     //required - if product_id is included all other fields will be ignored
-             
-             ... or ...
-             
-             "barcode":"123412341234",               //required
-             "name": "Pasta Roni White Shells",      //required
-             "description": "Pasta w/White Sauce",   //optional
-        }
+        "product_id": "111111111111121111",           //required - if product_id is included all other fields will be ignored
         "price": 12.3,                                //required        
         "store_id": "222222222222222222222222",       //required
         "user_id": "333333333333333333333333",        //required
