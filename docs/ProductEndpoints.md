@@ -73,7 +73,7 @@ fix the deficiency.
         	amount:"1",
         	units:"gallons"
         }
-        "_id": "511fff1b72bc612821000002"
+        "product_id": "511fff1b72bc612821000002"
     }
 ###### Error codes:
     404 Not Found
@@ -107,7 +107,7 @@ fix the deficiency.
         	units:"gallons"
         } 			
         "description": "Delicious Mountain Dairy Milk",
-        "_id": "511fff1b72bc612821000002"
+        "product_id": "511fff1b72bc612821000002"
     } 
 ###### Error codes:
     404 Not Found
