@@ -65,7 +65,6 @@ fix the deficiency.
     /products/046813279202
 ###### Expected Result:
     {
-        "__v": 0,
         "lastUpdate": "2013-02-16T21:50:19.882Z",
         "name": "Viva 2% Milk",
         "description": "Some description about milk",
@@ -90,9 +89,9 @@ fix the deficiency.
 ###### Example Request:
     /products/511fff1b72bc612821000002
     {
-        "barcode": "100", 		//optional
-        "name": "Mtn Dairy 1% Milk", 	//optional
-       "size": {			//optional
+	"barcode": "100", 		//optional
+	"name": "Mtn Dairy 1% Milk", 	//optional
+	"size": {			//optional
         	amount:"1",
         	units:"gallons"
         }
@@ -100,7 +99,6 @@ fix the deficiency.
     }
 ###### Expected Result:
     {
-        "__v": 0,
         "lastUpdate": "2013-02-16T21:50:19.882Z",
         "barcode": "100",
         "name": "Mtn Dairy 1% Milk", 		
