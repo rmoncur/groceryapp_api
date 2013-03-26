@@ -21,7 +21,7 @@ fix the deficiency.
 
 ###### Example Request:
     {
-        "product_id": "111111111111121111",           //required - if product_id is included all other fields will be ignored
+        "product_id": "111111111111121111",           //required
         "price": 12.3,                                //required        
         "store_id": "222222222222222222222222",       //required
         "user_id": "333333333333333333333333",        //required
