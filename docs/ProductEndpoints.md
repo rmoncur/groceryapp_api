@@ -33,13 +33,15 @@ fix the deficiency.
     }
 ###### Expected Result:
     {
-        "__v": 0,
         "lastUpdate": "2013-02-16T21:50:19.882Z",
         "name": "Viva 2% Milk",
         "description": "Some description about milk",
         "barcode": "046813279202",
-        "size": "1 Gallon",
-        "_id": "511fff1b72bc612821000002"
+        "size": {
+        	amount:"1",
+        	units:"gallons"
+        }
+        "product_id": "511fff1b72bc612821000002"
     }
 ###### Error codes: 
     404 Not Found
@@ -68,7 +70,10 @@ fix the deficiency.
         "name": "Viva 2% Milk",
         "description": "Some description about milk",
         "barcode": "046813279202",
-        "size": "1 Gallon",
+        "size": {
+        	amount:"1",
+        	units:"gallons"
+        }
         "_id": "511fff1b72bc612821000002"
     }
 ###### Error codes:
@@ -85,9 +90,12 @@ fix the deficiency.
 ###### Example Request:
     /products/511fff1b72bc612821000002
     {
-        "barcode": "100", 								//optional
-        "name": "Mtn Dairy 1% Milk", 					//optional
-        "size": "1 Gal", 								//optional
+        "barcode": "100", 		//optional
+        "name": "Mtn Dairy 1% Milk", 	//optional
+       "size": {			//optional
+        	amount:"1",
+        	units:"gallons"
+        }
         "description": "Delicious Mountain Dairy Milk" 	//optional
     }
 ###### Expected Result:
@@ -96,7 +104,10 @@ fix the deficiency.
         "lastUpdate": "2013-02-16T21:50:19.882Z",
         "barcode": "100",
         "name": "Mtn Dairy 1% Milk", 		
-        "size": "1 Gal", 			
+        "size": {
+        	amount:"1",
+        	units:"gallons"
+        } 			
         "description": "Delicious Mountain Dairy Milk",
         "_id": "511fff1b72bc612821000002"
     } 
