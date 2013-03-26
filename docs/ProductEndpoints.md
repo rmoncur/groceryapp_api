@@ -21,10 +21,15 @@ fix the deficiency.
 
 ###### Example Request:
     {
-        "barcode": "046813279202", 						//required
-        "name": "Viva 2% Milk", 						//optional
-        "size": "1 Gallon", 							//optional
-        "description": "Some description about milk" 	//optional
+        "barcode": "046813279202", 			//required
+        "name": "Viva 2% Milk", 			//required
+        "size": {					//optional (but highly suggested)
+        	amount:1, 				
+        	units:"gallons"	
+        }
+        "description": "Some description about milk", 	//optional
+        "price":1.53,					//optional (required with store_id to create an "item")
+        "store_id":"12351236123r23"			//optional (required with price to create an "item")
     }
 ###### Expected Result:
     {
