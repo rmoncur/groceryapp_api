@@ -1,4 +1,4 @@
-# Product Endpoints
+# Item Endpoints
 ###### Notes:
 This Document is intended to be comprehensive. It is to
 be used as an API development guide as well as a client implementation guide.
@@ -21,8 +21,8 @@ fix the deficiency.
 
 ###### Example Request:
     {
-        "price": 12.3,                                //required
-        "product_id": "111111111111111111111111",     //required
+        "product_id": "111111111111121111",           //required
+        "price": 12.3,                                //required        
         "store_id": "222222222222222222222222",       //required
         "user_id": "333333333333333333333333",        //required
         "purchased": true,                            //optional; default = false

@@ -21,20 +21,27 @@ fix the deficiency.
 
 ###### Example Request:
     {
-        "barcode": "046813279202", 						//required
-        "name": "Viva 2% Milk", 						//optional
-        "size": "1 Gallon", 							//optional
-        "description": "Some description about milk" 	//optional
+        "barcode": "046813279202", 			//required
+        "name": "Viva 2% Milk", 			//required
+        "size": {					//optional (but highly suggested)
+        	amount:1, 				
+        	units:"gallons"	
+        }
+        "description": "Some description about milk", 	//optional
+        "price":1.53,					//optional (required with store_id to create an "item")
+        "store_id":"12351236123r23"			//optional (required with price to create an "item")
     }
 ###### Expected Result:
     {
-        "__v": 0,
         "lastUpdate": "2013-02-16T21:50:19.882Z",
         "name": "Viva 2% Milk",
         "description": "Some description about milk",
         "barcode": "046813279202",
-        "size": "1 Gallon",
-        "_id": "511fff1b72bc612821000002"
+        "size": {
+        	amount:"1",
+        	units:"gallons"
+        }
+        "product_id": "511fff1b72bc612821000002"
     }
 ###### Error codes: 
     404 Not Found
@@ -58,13 +65,15 @@ fix the deficiency.
     /products/046813279202
 ###### Expected Result:
     {
-        "__v": 0,
         "lastUpdate": "2013-02-16T21:50:19.882Z",
         "name": "Viva 2% Milk",
         "description": "Some description about milk",
         "barcode": "046813279202",
-        "size": "1 Gallon",
-        "_id": "511fff1b72bc612821000002"
+        "size": {
+        	amount:"1",
+        	units:"gallons"
+        }
+        "product_id": "511fff1b72bc612821000002"
     }
 ###### Error codes:
     404 Not Found
@@ -80,21 +89,66 @@ fix the deficiency.
 ###### Example Request:
     /products/511fff1b72bc612821000002
     {
-        "barcode": "100", 								//optional
-        "name": "Mtn Dairy 1% Milk", 					//optional
-        "size": "1 Gal", 								//optional
+	"barcode": "100", 		//optional
+	"name": "Mtn Dairy 1% Milk", 	//optional
+	"size": {			//optional
+        	amount:"1",
+        	units:"gallons"
+        }
         "description": "Delicious Mountain Dairy Milk" 	//optional
     }
 ###### Expected Result:
     {
-        "__v": 0,
         "lastUpdate": "2013-02-16T21:50:19.882Z",
         "barcode": "100",
         "name": "Mtn Dairy 1% Milk", 		
-        "size": "1 Gal", 			
+        "size": {
+        	amount:"1",
+        	units:"gallons"
+        } 			
         "description": "Delicious Mountain Dairy Milk",
-        "_id": "511fff1b72bc612821000002"
+        "product_id": "511fff1b72bc612821000002"
     } 
+###### Error codes:
+    404 Not Found
+    {
+        "error": true,
+        "message": "Not found"
+    }
+
+#### Search
+
+    PUT /products/?{parameters}
+
+###### Example Request:
+    /products/?name=chicken
+    
+###### Expected Result:
+	[
+		{
+			"product_id":"asdfasdfasdf45y45",
+			"barcode": "123412341234",
+			"name": "Chicken Breasts",
+			"size": {
+				amount:"1",
+				units:"gallons"
+			},
+			"description": "Delicious chicken breasts",
+			"img":"http://images.com/img/124123523523623.jpg
+			"pricedata": {
+				"high":2.45,	
+				"low":1.45,
+				"avg":1.95,
+				"median":1.85,
+				"numscans":24,	//the number of times the product has been scanned, reported, etc.
+			}
+		},
+		{
+			"name": "Chicken pot pie",
+			...
+		}
+		...
+	]
 ###### Error codes:
     404 Not Found
     {
