@@ -53,6 +53,7 @@
 		$.ajax({
 			type:"POST",
 			processData: false,
+			contentType: 'application/json',
 			data:JSON.stringify(product),
 			url: '/products',
 			success: function(data,ajax,xhr){

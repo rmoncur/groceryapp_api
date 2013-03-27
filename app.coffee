@@ -98,6 +98,7 @@ exports.createServer = ->
     UserController.createUser req, res
 
   app.post '/users/login', (req, res) ->
+    console.log req.body
     UserController.login req, res
 
   #This is the put endpoint where users will be updated
