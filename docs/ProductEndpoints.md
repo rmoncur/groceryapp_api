@@ -124,28 +124,31 @@ fix the deficiency.
     /products/?name=chicken
     
 ###### Expected Result:
-    [
-	{
-		product_id:"asdfasdfasdf45y45",
-		"barcode": "123412341234",
-		"name": "Chicken Breasts",
-		"size": {
-			amount:"1",
-			units:"gallons"
+	[
+		{
+			"product_id":"asdfasdfasdf45y45",
+			"barcode": "123412341234",
+			"name": "Chicken Breasts",
+			"size": {
+				amount:"1",
+				units:"gallons"
+			},
+			"description": "Delicious chicken breasts",
+			"img":"http://images.com/img/124123523523623.jpg
+			"pricedata": {
+				"high":2.45,	
+				"low":1.45,
+				"avg":1.95,
+				"median":1.85,
+				"numscans":24,	//the number of times the product has been scanned, reported, etc.
+			}
+		},
+		{
+			"name": "Chicken pot pie",
+			...
 		}
-		"description": "Delicious chicken breasts"
-	},
-	{
-		product_id:"asdfas23445y45",
-		"barcode": "123512351235",
-		"name": "Chicken Broth",
-		"size": {
-			amount:"13",
-			units:"ounces"
-		}
-		"description": "Delicious chicken broth"
-	},
-    ]
+		...
+	]
 ###### Error codes:
     404 Not Found
     {
