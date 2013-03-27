@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Import</title>
+<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+<script>
+	$(document).ready(function(e) {
+		
+		//Globals
+		user = {};
+		products = {};
+		
+		//Getting the login data
+		login();
+		
+		//Reading in the data
+		readData();
+	});
+	
+	//Logging in
+	function login(){
+		
+		var mydata = {
+			email:"robmonc@gmail.com",
+			password:"password"
+		}
+		
+		$.ajax({
+			type:"POST",
+			processData: false,
+			contentType: 'application/json',
+			data:JSON.stringify(mydata),
+			url: '/users/login',
+			success: function(data,ajax,xhr){
+				console.log("Success Login",data,ajax,xhr);	
+				user = data;
+				$("#logindata").text(JSON.stringify(user));
+			},
+			error: function(){
+				console.log("Error");	
+			}						
+		});
+		
+	}
+	
+	//Creating the product
+	function createProduct(product){
+		
+		product.user_id = user.user_id;
+		console.log("Create Product Pre-send",product);
+		
+		$.ajax({
+			type:"POST",
+			processData: false,
+			data:JSON.stringify(product),
+			url: '/products',
+			success: function(data,ajax,xhr){
+				console.log("Success Creating Product",data,ajax,xhr);
+				
+			},
+			error: function(){
+				console.log("Error creating product");
+			}
+		});
+		
+	}
+	
+	//Reading data from the CSV file
+	function readData(){
+		$.ajax({
+			type:"GET",
+			url: 'importdata.csv',
+			success: function(data,ajax,xhr){
+				//console.log("Success Get",data,ajax,xhr);
+				
+				//Parsing the CSV
+				var lines = data.split("\n");
+				var keys = lines.shift().split(",");
+				keys[keys.length-1] = keys[keys.length-1].replace("\n","");
+				products = [];
+				
+				//Parsing each line of the CSV file
+				for(var i in lines){
+					var values = lines[i].split(",");	
+					var newobject = {"size":{}};
+					for(var j in values){
+						
+						if( values[j] == "\r" || keys[j] == "\r" || keys[j] == "purchased_at" || keys[j] == "sale" ) continue;
+						
+						if( values[j] == "NULL") values[j] = null;
+						
+						if( keys[j] == "amount" || keys[j] == "units" || keys[j] == "quantity" ){
+							newobject.size[keys[j]] = values[j];
+						} else {						
+							newobject[keys[j]] = values[j];
+						}
+						
+					}
+					
+					//Managing the store_id
+					if( newobject.store == "Walmart" ) 
+						newobject.store_id = "4b188ea5f964a5200fd423e3";
+					if( newobject.store == "Smiths" ) 
+						newobject.store_id = "4b872706f964a52079b331e3";
+					if( newobject.store == "Maceys" ) 
+						newobject.store_id = "4b93139ef964a520563334e3";
+					if( newobject.store == "Target" ) 
+						newobject.store_id = "4bdb6659f1499c74e34e38f3";					
+					delete newobject.store;
+					
+					//Adding the product to the data
+					products.push(newobject);
+					$("#importdata").append("<div>" + JSON.stringify(newobject) + "</div>");
+					
+					//Creating the product
+					createProduct(newobject);
+				}
+				console.log("Parsed Data",products);
+			},
+			error: function(){
+				console.log("Error");	
+			}						
+		});	
+	}
+</script>
+</head>
+
+<body>
+<div id="logindata"></div>
+<button onclick="readData();">Start Import</button>
+<div id="importdata"></div>
+</body>
+</html>

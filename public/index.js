@@ -76,11 +76,12 @@ module.controller('TodoController', function ($scope,$navigate,$waitDialog,$http
 	$scope.report = {
 		barcode:"051000013477",
 		price:"1.52",
-		img:"http://cdn1.iconfinder.com/data/icons/BRILLIANT/education_icons/png/400/teachers_day.png"
+		img:"images/placeholder.gif"
 		,name:"Granny Smith Apple"
-		,units_abrev:"gal."
-		,units:"gallons"
-		,size:4.4
+		,size:{
+			amount:4.4,
+			units:"ounces"
+		}
 	}
 	
 	//Product Data
@@ -105,7 +106,7 @@ module.controller('TodoController', function ($scope,$navigate,$waitDialog,$http
 	}
 	
 	//Logging in
-	$scope.login = function($http){				
+	$scope.login = function($http){
 		
 		$.ajax({
 			type:"POST",
@@ -203,31 +204,58 @@ module.controller('TodoController', function ($scope,$navigate,$waitDialog,$http
 	
 	//Lookup an item
 	$scope.readItem = function(){
-		console.log("Sending",$scope.report);
-		
-		var barcode = $scope.report.barcode;
-		
-		//alert( typeof barcode );
 		
 		if( $scope.report.barcode.length != 8 && $scope.report.barcode.length != 12 ){ 	
-			//alert("UPC Length must be 8 or 12 = " + $scope.report.barcode.length);
-			//return;
+			$scope.report.message = "UPC must be 8 or 12 digits";
+			$scope.report.messageclass = "warning";
+			$scope.report.barcodelength = $scope.report.barcode.length
+			return;
 		}
+		
+		console.log("Sending",$scope.report);
 		
 		$.ajax({
 			type:"GET",
 			processData: true,
 			data:{},
-			url: '/products/' + $scope.report.barcode,
+			url: '/products/' + $scope.report.barcode,			
+			beforeSend: function(){
+				$scope.report.message = "Searching for product";
+				$scope.report.messageclass = "info";								
+				$scope.$apply();
+			},
 			success: function(data,ajax,xhr){
-				console.log("Success Product",data,ajax,xhr);
+				console.log("Success Reading Product",data,ajax,xhr);
 				$scope.report.description = data.description;
 				$scope.report.name = data.name;
+				$scope.report.product_id = data.product_id;
+				$scope.report.size = data.size;
+				$scope.report.buttonclass = "reportok";
+				
+				$scope.report.message = "Found Product";
+				$scope.report.messageclass = "success";
 								
 				$scope.$apply();
 			},
 			error: function(){
+				$scope.report.message = "Could not find item";
+				$scope.report.messageclass = "warning";
+				$scope.$apply();
 				//alert("Error Reading Item");	
+			},
+			statusCode: {
+				404: function() {
+					console.log("Product Not found");
+					
+					$scope.report.message = "Could not find item";
+					$scope.report.messageclass = "warning";
+					
+					var upc = $scope.report.barcode;
+					//$scope.report.name = "";
+					//$scope.report.description = "";
+					$scope.report = {barcode:upc,size:{}}
+					$scope.$apply();
+				}
 			}
 		});
 			
@@ -235,24 +263,93 @@ module.controller('TodoController', function ($scope,$navigate,$waitDialog,$http
 	
 	//Reporting an item
 	$scope.reportItem = function(){
-		$scope.createProduct();
+		//$scope.createProduct();
+		
+		//Creating the product
+		if( $scope.report.product_id != null && $scope.report.product_id != ""){
+			var myproduct = {
+				"product_id":$scope.report.product_id
+			};	
+		} else {
+			var myproduct = {
+				barcode: $scope.report.barcode,
+				name: $scope.report.name,
+				description:$scope.report.description,
+			};	
+		}
+		
+		//Create new product and "report a price"
+		var mydata = {
+			product:myproduct,
+			price:$scope.report.price,
+			purchased:$scope.report.purchased,				
+			store_id:$scope.selectedStore.store_id,
+			user_id:$scope.user.user_id,			
+			size:{
+				amount:$scope.report.size.amount,
+				units:$scope.report.size.units
+			}
+		}
+		
+		//Sending the request
+		$.ajax({
+			type:"POST",
+			data:JSON.stringify(mydata),
+			url: '/items',
+			success: function(data,ajax,xhr){
+				console.log("Success Creating Product",data,ajax,xhr);
+				$scope.report.product_id = data.product_id;
+				console.log("Report Data",$scope.report);
+				
+				//Changing the status message
+				$scope.report.message = "New Product Created";
+				$scope.report.messageclass = "success";
+								
+				$scope.$apply(); //Applying Changes
+				
+				//$scope.createPurchase();
+			},
+			error: function(){
+				$scope.report.message = "Error Creating Product";
+				$scope.report.messageclass = "error";
+				$scope.$apply(); //Applying Changes
+				//alert("Error Creating Product");	
+			}
+		});
+		
 	}
 	
 	//Reporting a new item
 	$scope.createProduct = function(){
 				
 		//Getting the data to create the product
-		var mydata = {			
+		/*var mydata = {			
 			barcode: $scope.report.barcode,       //required
 			name: $scope.report.name,             //optional
 			size: {
-				amount: $scope.report.size,       //optional
-				units: $scope.report.units,       //optional
+				amount: $scope.report.size.amount,       //optional
+				units: $scope.report.size.units,       //optional
 			},
 			description: $scope.report.description//optional
-		};
+		};*/
+		
+		//Create new product and "report a price"
+		var mydata = {
+			barcode: $scope.report.barcode,
+			name: $scope.report.name,
+			purchased:$scope.report.purchased,			
+			price:$scope.report.price,	
+			store_id:$scope.selectedStore,
+			user_id:$scope.user.user_id,			
+			description:$scope.report.description,
+			size:{
+				amount:$scope.report.size.amount,
+				units:$scope.report.size.units
+			}
+		}
 		
 		console.log("Creating a Product",mydata);
+		//return false;
 		
 		//Sending the request
 		$.ajax({
@@ -263,12 +360,18 @@ module.controller('TodoController', function ($scope,$navigate,$waitDialog,$http
 				console.log("Success Creating Product",data,ajax,xhr);
 				$scope.report.product_id = data.product_id;
 				console.log("Report Data",$scope.report);
-				//$scope.report.description = data.description;
-				$scope.$apply();
 				
-				$scope.createPurchase();
+				//Changing the status message
+				$scope.report.message = "New Product Created";
+				$scope.report.messageclass = "success";
+								
+				$scope.$apply(); //Applying Changes
+				
+				//$scope.createPurchase();
 			},
 			error: function(){
+				$scope.report.message = "Error Creating Product";
+				$scope.report.messageclass = "error";
 				//alert("Error Creating Product");	
 			}
 		});
@@ -276,7 +379,7 @@ module.controller('TodoController', function ($scope,$navigate,$waitDialog,$http
 	}
 	
 	//Reporting a new item
-	$scope.createPurchase = function(){		
+	$scope.createPurchase = function(){	
 		
 		var mydata = {
 			"user_id": $scope.user.user_id,      		//required
@@ -297,14 +400,18 @@ module.controller('TodoController', function ($scope,$navigate,$waitDialog,$http
 			url: '/purchases/',
 			success: function(data,ajax,xhr){
 				console.log("Success Creating Purchase",data,ajax,xhr);
-				$scope.report.description = data.description;
-				//$scope.storesNearby = data;
-				//$scope.selectedStore = $scope.storesNearby[0];
+				$scope.report = {};				
+				
+				$scope.report.message = "New Purchase Reported";
+				$scope.report.messageclass = "success";
+				
 				$scope.$apply();
 			},
 			error: function(){
 				console.log('Error creating a purchase');
-				alert("Error");	
+				$scope.report.message = "Error creating a purchase";
+				$scope.report.messageclass = "error";				
+				$scope.$apply();
 			}
 		});
 			
