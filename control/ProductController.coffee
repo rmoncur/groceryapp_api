@@ -71,7 +71,7 @@ module.exports = (Product) =>
     name = ""
     name = req.query.name if req?.query?.name
     options = {}
-    options.name = new RegExp('^' + name + '*')
+    options.name = new RegExp('^' + name)
     Product.getProducts name, (err, products)=>
       return res.json err if err
       return response.error errors.PRODUCT_NOT_FOUND, res
