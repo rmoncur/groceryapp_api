@@ -118,7 +118,7 @@ fix the deficiency.
 
 #### Search
 
-    PUT /products/?{parameters}
+    GET /products/?{parameters}
 
 ###### Example Request:
     /products/?name=chicken
