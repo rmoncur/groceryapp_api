@@ -67,6 +67,17 @@ module.exports = (Product) =>
         
         res.json normalize product
 
+  getProducts: (req, res) =>
+    name = req.query.name
+    options = {}
+    options.name = { $regex: name, $options: 'i' }
+    Product.getProducts name, (err, products)=>
+      return res.json err if err
+      return response.error errors.PRODUCT_NOT_FOUND, res
+      results = []
+      results.push(normalize(product)) for product in products
+      res.json results
+
   getProduct: (req, res) =>
     barcode = req.params.barcode
     #We will store all of our barcodes as 13 digit codes so if they are only 12 add the leading 0

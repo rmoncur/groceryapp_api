@@ -21,6 +21,9 @@ module.exports = (db) ->
 		last_update: Date
 	}
 	
+	ProductSchema.statics.getProducts = (options, cb)->
+		@find(options).exec cb
+
 	ProductSchema.statics.getProduct = (barcode, cb)->
     @findOne({"barcode": barcode}).exec cb
     

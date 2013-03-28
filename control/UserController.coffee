@@ -1,5 +1,6 @@
 response = require('./ResponseMethods')()
 tokenGenerator = require('./TokenGenerator')()
+md5 = require('MD5')
 
 module.exports = (User) =>
 	errors =
@@ -95,20 +96,25 @@ errors = ()->
 		code: 401
 
 base = ()-> [
-      'user_id'
-      'email'
-      'token'
-      'username'
-      'points'
-  ]
+			'user_id'
+			'email'
+			'token'
+			'username'
+			'points'
+	]
 
 normalize = (user) ->
 	result = {}
 	fields = base()
 	for key in fields
 		if key is 'user_id' and user._id?
-        result[key] = user._id
+			result[key] = user._id
 		else if user[key]?
-        result[key] = user[key]
+			result[key] = user[key]
 	
-  return result
+	result.img = 'http://www.gravatar.com/avatar/' + md5(result.email)
+	result.level = getLevel(result.points)
+	return result
+
+getLevel = (points)->
+	return Math.floor(points/10)

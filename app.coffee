@@ -159,6 +159,9 @@ exports.createServer = ->
 
   
   ### PRODUCTS ###
+  app.get '/products', (req, res) ->
+    ProductController.getProducts req, res
+
   app.get '/products/:barcode', (req, res) ->
     ProductController.getProduct req, res
 
