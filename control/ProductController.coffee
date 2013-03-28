@@ -68,9 +68,10 @@ module.exports = (Product) =>
         res.json normalize product
 
   getProducts: (req, res) =>
-    name = req.query.name
+    name = ""
+    name = req.query.name if req?.query?.name
     options = {}
-    options.name = { $regex: name, $options: 'i' }
+    options.name = new RegExp('^' + name + '*')
     Product.getProducts name, (err, products)=>
       return res.json err if err
       return response.error errors.PRODUCT_NOT_FOUND, res
