@@ -10,7 +10,6 @@ fix the deficiency.
 * [Tags](#tags)
 	* [Create](#create) - **POST** /users/:user_id/tags
 	* [Get](#get) - **GET** /users/:user_id/tags/?tag_id=tag_id
-	* [GetAll](#getall) - **GET** /users/:user_id/tags/
 	* [Update](#update) - **PUT** /users/:user_id/tags/:tag_id
 	* [Delete](#delete) - **DELETE** /users/:user_id/tags/:tag_id
 	* [Search](#search) - **GET** /users/:user_id/tags/?search=search_string
@@ -33,3 +32,59 @@ fix the deficiency.
 {
 	
 }
+
+#### Get
+
+	GET /users/:user_id/tags/?tag_id=tag_id
+
+###### Example Request:
+{
+}
+###### Expected Result:
+{	
+}
+
+#### GetAll
+
+	
+
+###### Example Request:
+{
+}
+###### Expected Result:
+{	
+}
+
+#### Update
+
+	PUT /users/:user_id/tags/:tag_id
+
+###### Example Request:
+{
+}
+###### Expected Result:
+{	
+}
+
+#### Delete
+
+	DELETE /users/:user_id/tags/:tag_id
+
+###### Example Request:
+{
+}
+###### Expected Result:
+{	
+}
+
+#### Search
+
+	GET /users/:user_id/tags/?search=search_string
+
+###### Example Request:
+{
+}
+###### Expected Result:
+{	
+}
+
