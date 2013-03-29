@@ -10,6 +10,7 @@ fix the deficiency.
 * [Tags](#tags)
 	* [Create](#create) - **POST** /users/:user_id/tags
 	* [Get](#get) - **GET** /users/:user_id/tags/?tag_id=tag_id
+	* [GetByCategory](#getCategory) - **GET** /
 	* [Update](#update) - **PUT** /users/:user_id/tags/:tag_id
 	* [Delete](#delete) - **DELETE** /users/:user_id/tags/:tag_id
 	* [Search](#search) - **GET** /users/:user_id/tags/?search=search_string
@@ -44,16 +45,44 @@ fix the deficiency.
 {	
 }
 
-#### GetAll
+#### GetByCategory
 
-	
+	GET /users/511a9a244bcab18c13000002/tags/?category=dairy&token=a0381679-8dc5-4aaa-bb34-87f410cd3420-3e9-66-d06f67668d
 
 ###### Example Request:
 {
 }
 ###### Expected Result:
-{	
-}
+[
+    {
+        "userId": "511a9a244bcab18c13000002",
+        "name": "milk",
+        "category": "dairy",
+        "_id": "513fa31c4832968016000006",
+        "__v": 0,
+        "complimentTags": [
+            "[object Object]"
+        ],
+        "relatedTags": [
+            "[object Object]",
+            "[object Object]"
+        ]
+    },
+    {
+        "userId": "511a9a244bcab18c13000002",
+        "name": "milk",
+        "category": "dairy",
+        "_id": "513fa3294832968016000007",
+        "__v": 0,
+        "complimentTags": [
+            "[object Object]"
+        ],
+        "relatedTags": [
+            "[object Object]",
+            "[object Object]"
+        ]
+    }
+]
 
 #### Update
 
@@ -85,6 +114,18 @@ fix the deficiency.
 {
 }
 ###### Expected Result:
-{	
+{
+    "userId": "511a9a244bcab18c13000002",
+    "name": "milk",
+    "category": "dairy",
+    "_id": "513fa31c4832968016000006",
+    "__v": 0,
+    "complimentTags": [
+        "[tag_id]"
+    ],
+    "relatedTags": [
+        "[tag_id]",
+        "[tag_id]"
+    ]
 }
 
