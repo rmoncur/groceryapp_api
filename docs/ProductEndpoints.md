@@ -21,27 +21,41 @@ fix the deficiency.
 
 ###### Example Request:
     {
-        "barcode": "046813279202", 			//required
-        "name": "Viva 2% Milk", 			//required
-        "size": {					//optional (but highly suggested)
-        	amount:1, 				
-        	units:"gallons"	
+        "barcode": "046813279202",                    //required
+        "name": "Viva 2% Milk",                       //required
+        "user_id": "651651651651651651",              //required
+        "size": {                                     //optional (but highly suggested)
+          "amount": 1,
+          "units": "gallons"	
         }
-        "description": "Some description about milk", 	//optional
-        "price":1.53,					//optional (required with store_id to create an "item")
-        "store_id":"12351236123r23"			//optional (required with price to create an "item")
+        "description": "Some description about milk", //optional
+        
+        "price":1.53,                                 //optional (required with store_id to create an "item")
+        "store_id":"12351236123r23",                  //optional (required with price to create an "item")
+        "purchased":true                              //optional (required with price and store_id to create an "item")
     }
 ###### Expected Result:
     {
-        "lastUpdate": "2013-02-16T21:50:19.882Z",
-        "name": "Viva 2% Milk",
-        "description": "Some description about milk",
-        "barcode": "046813279202",
-        "size": {
-        	amount:"1",
-        	units:"gallons"
+        "product": {
+            "lastUpdate": "2013-02-16T21:50:19.882Z",
+            "name": "Viva 2% Milk",
+            "description": "Some description about milk",
+            "barcode": "046813279202",
+            "size": {
+              	amount:"1",
+              	units:"gallons"
+            }
+            "product_id": "511fff1b72bc612821000002"
+        },
+        "item": {
+          "date": "2013-03-30T03:10:42.280Z",
+          "item_id": "515657b2f998fe2a6c00003c",
+          "price": 1.53,
+          "product_id": "511fff1b72bc612821000002",
+          "purchased": true,
+          "store_id": "12351236123r23",
+          "user_id": " uTHL3EiTfrKhzhOrCHs1NAq"
         }
-        "product_id": "511fff1b72bc612821000002"
     }
 ###### Error codes: 
     404 Not Found

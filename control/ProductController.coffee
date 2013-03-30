@@ -1,7 +1,7 @@
 response = require('./ResponseMethods')()
 http = require('http')
 
-module.exports = (Product) => 
+module.exports = (Product, Item) => 
 
   errors = 
     PRODUCT_NOT_FOUND: 
@@ -36,7 +36,7 @@ module.exports = (Product) =>
       product.save (err) ->
         return res.json {error: true, message: err.message}, 500 if err?
       
-        res.json normalize(product)
+        res.json normalizeProduct(product)
 
 
   createProduct: (req, res) =>
@@ -61,11 +61,18 @@ module.exports = (Product) =>
       product.save (err) =>
         return res.send {error: true, message: err.message}, 500 if err?
         
+        if store_id? and price?
+          item = new Item body
+          item.product_id = product.id
+          item.save (err) =>
+            console.log err if err?
+            return res.send { error: true, message: err.message }, 500 if err?
+#            console.log 'now here'
+          
+            return res.json { product: normalizeProduct(product), item: normalizeItem(item) }, 201
+        else
+          res.json { product: normalizeProduct product }, 201
         
-#		    if store_id? and price?
-    			
-        
-        res.json normalize product
 
   getProducts: (req, res) =>
     name = ""
@@ -75,7 +82,7 @@ module.exports = (Product) =>
       return res.json err if err
       return response.error errors.PRODUCT_NOT_FOUND, res
       results = []
-      results.push(normalize(product)) for product in products
+      results.push(normalizeProduct(product)) for product in products
       res.json results
 
   getProduct: (req, res) =>
@@ -85,7 +92,7 @@ module.exports = (Product) =>
     Product.getProduct barcode, (err, product) =>
       return res.json {error: true, message: err.message}, 500 if err?
       return findProduct barcode, res if not product?
-      res.json normalize(product)
+      res.json normalizeProduct(product)
       
     findProduct = (barcode, res) =>
       apikey = "187bd7a0e52dd56fd86e4ba25629084c"
@@ -117,7 +124,7 @@ module.exports = (Product) =>
           else
             return response.error errors.PRODUCT_NOT_FOUND, res
 
-          res.json normalize product
+          res.json normalizeProduct product
 
       req.on 'error', (e) ->
         console.log e.message
@@ -139,7 +146,7 @@ errors =
     message: "A product with the given barcode already exists"
     code: 409
 
-base = ()-> [
+productBase = [
   'product_id'
   'user_id'
   'name'
@@ -150,9 +157,29 @@ base = ()-> [
   'description'
 ]
 
-normalize = (product) ->
+itemBase = [
+  'price'
+  'store_id'
+  'item_id'
+  'product_id'
+  'user_id'
+  'date'
+  'purchased'
+]
+
+normalizeItem = (item) ->
   result = {}
-  fields = base()
+  for key in itemBase
+    if key is "item_id" and item._id?
+      result[key] = item._id
+    else 
+      result[key] = item[key]
+  return result
+
+
+normalizeProduct = (product) ->
+  result = {}
+  fields = productBase
   for key in fields
     if key is 'product_id' and product._id?
       result[key] = product._id

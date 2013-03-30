@@ -47,13 +47,13 @@ UserController = UserControllerModel User #pass class into controller so that we
 Tag = TagModel db
 TagController = TagControllerModel Tag
 
+Item = ItemModel db
 Product = ProductModel db
-ProductController = ProductControllerModel Product
+ProductController = ProductControllerModel Product, Item
 
 Purchase = PurchaseModel db
 PurchaseController = PurchaseControllerModel Purchase
 
-Item = ItemModel db
 ItemController = ItemControllerModel Item
 
 StoresController = require('./control/StoresController')()
@@ -195,15 +195,6 @@ exports.createServer = ->
     
   app.put '/items/:item_id', (req, res) ->
     ItemController.updateItem req, res
-  
-#  app.put '/items/:item_id', (req, res) ->
-#    PurchaseController.updateItem req, res
-#    
-#  app.delete '/items/:item_id', (req, res) ->
-#    PurchaseController.deleteItem req, res
-#    
-#  app.post '/purchases/:purchase_id/items', (req, res) ->
-#    PurchaseController.addItemToPurchase req, res
 
 
 
@@ -236,7 +227,7 @@ exports.createServer = ->
 
 #This is where we really start our server
 if module == require.main
-  PORT = 80
+  PORT = 8000
   app = exports.createServer()
   app.listen PORT #This is the port we are listening on.
   console.log "Running Grocery App Service on port: " + PORT #This is just some output to show that the server is working
