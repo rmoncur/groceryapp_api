@@ -9,7 +9,8 @@ fix the deficiency.
 ## Navigation
 * [Products](#products)
 	* [Create](#create) - **POST** /products	
-	* [Read](#read) - **GET** /products/:barcode
+	* [Read](#read) - **GET** /products/:product_id
+	* [Read](#read-1) - **GET** /products
 	* [Update](#update) - **PUT** /products/:product_id
 
 
@@ -73,12 +74,15 @@ fix the deficiency.
 
 #### Read
 
-    GET /products/:barcode
+    GET /products/:product_id
+    
+    Gets a product along with a list of the most recent scan for each store
 
 ###### Example Request:
-    /products/046813279202
+    /products/511fff1b72bc612821000002
 ###### Expected Result:
     {
+      "product": {
         "lastUpdate": "2013-02-16T21:50:19.882Z",
         "name": "Viva 2% Milk",
         "description": "Some description about milk",
@@ -88,6 +92,19 @@ fix the deficiency.
         	units:"gallons"
         }
         "product_id": "511fff1b72bc612821000002"
+      },
+      "items": [
+      	{
+      		"price":80,
+      		"store_id": "456456456456456456456456",
+      		"item_id":"51571930b16f68bc2200008e",
+      		"product_id":"511fff1b72bc612821000002",
+      		"user_id":"678678678678678678678678",
+      		"date":"2013-03-17T06:00:00.000Z",
+      		"purchased":false
+    		},
+    		...
+      ]
     }
 ###### Error codes:
     404 Not Found
@@ -148,7 +165,7 @@ fix the deficiency.
 				units:"gallons"
 			},
 			"description": "Delicious chicken breasts",
-			"img":"http://images.com/img/124123523523623.jpg
+			"img":"http://images.com/img/124123523523623.jpg"
 			"pricedata": {
 				"high":2.45,	
 				"low":1.45,
@@ -169,4 +186,34 @@ fix the deficiency.
         "error": true,
         "message": "Not found"
     }
+
+###### Example Request:
+    /products/?barcode=132132
+    
+###### Expected Result:
+	[
+		{
+			"product_id":"asdfasdfasdf45y45",
+			"barcode": "123412341234",
+			"name": "Chicken Breasts",
+			"size": {
+				amount:"1",
+				units:"gallons"
+			},
+			"description": "Delicious chicken breasts",
+			"img":"http://images.com/img/124123523523623.jpg
+			"pricedata": {
+				"high":2.45,	
+				"low":1.45,
+				"avg":1.95,
+				"median":1.85,
+				"numscans":24,	//the number of times the product has been scanned, reported, etc.
+			}
+		},
+		{
+			"name": "Chicken pot pie",
+			...
+		}
+		...
+	]
 

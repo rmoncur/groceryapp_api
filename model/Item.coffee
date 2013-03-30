@@ -13,7 +13,8 @@ module.exports = (db) ->
 		user_id: { type: String, required: true },
 		store_id: { type: String, required: true },
 		date: { type: Date, default: Date.now },
-		purchased: {type: Boolean, default: false }
+		purchased: {type: Boolean, default: false },
+		most_recent_for_store: {type: Boolean, default: true }
 	}
 
 	ItemSchema.statics.getItemById = (item_id, cb) ->
@@ -22,6 +23,13 @@ module.exports = (db) ->
     
   ItemSchema.statics.getItemsByUserId = (user_id, cb) ->
   	@find("user_id" : user_id).exec cb
+  	
+	ItemSchema.statics.getMostRecentItemsByProductId = (product_id, cb) ->
+		@find({"product_id" : product_id, "most_recent_for_store": true }).exec cb
+		
+	ItemSchema.statics.updateMostRecentItem = (item) ->
+		item_id = new ObjectId(item._id.toString())
+		@update({"store_id": item.store_id, "_id": { $ne : item_id } }, { most_recent_for_store: false }, { multi: true }).exec()
 
 	# This exports the schema
 	Item = db.model "Item", ItemSchema

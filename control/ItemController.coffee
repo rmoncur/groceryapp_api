@@ -19,6 +19,7 @@ module.exports = (Item) =>
 		
 		item.save (err) =>
 			return res.json { error: true, message: err.message }, 500 if err?
+			Item.updateMostRecentItem(item)
 			res.json normalize(item), 201
 
 	getItem: (req, res) => 

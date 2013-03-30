@@ -66,7 +66,7 @@ module.exports = (Product, Item) =>
           item = new Item body
           item.product_id = product.id
           item.save (err) =>
-            console.log err if err?
+            Item.updateMostRecentItem(item)
             return res.send { error: true, message: err.message }, 500 if err?
 #            console.log 'now here'
           
@@ -81,13 +81,27 @@ module.exports = (Product, Item) =>
     options = {name : new RegExp('^' + name)}
     Product.getProducts options, (err, products)=>
       return res.json err if err
-      return response.error errors.PRODUCT_NOT_FOUND, res
+      return response.error errors.PRODUCT_NOT_FOUND, res if not products?
       results = []
       results.push(normalize.product(product)) for product in products
       res.json results
 
   getProduct: (req, res) =>
-    barcode = req.params.barcode
+    product_id = req.params.product_id
+    
+    Product.getProductById product_id, (err, product) =>
+      return res.json {error:true, message: err.message}, 500 if err?
+      return response.error errors.PRODUCT_NOT_FOUND, res if not product?
+      
+      Item.getMostRecentItemsByProductId product_id, (err, items) =>
+        result = []
+        result.push(normalize.item(item)) for item in items
+        
+        res.json { product: normalize.product(product), items: result }
+        
+
+  getProductByBarcode: (req, res) =>
+    barcode = req.query.barcode
     #We will store all of our barcodes as 13 digit codes so if they are only 12 add the leading 0
 #    barcode = "0#{barcode}" if barcode.length is 12
     Product.getProduct barcode, (err, product) =>

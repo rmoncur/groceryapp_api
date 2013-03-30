@@ -160,10 +160,14 @@ exports.createServer = ->
   
   ### PRODUCTS ###
   app.get '/products', (req, res) ->
+    return ProductController.getProductByBarcode req, res if req.query?.barcode?
     ProductController.getProducts req, res
 
-  app.get '/products/:barcode', (req, res) ->
+  app.get '/products/:product_id', (req, res) ->
     ProductController.getProduct req, res
+
+#  app.get '/products', (req, res) ->
+#    ProductController.getProductByBarcode req, res
 
   app.post '/products', (req, res) -> 
     console.log req.body

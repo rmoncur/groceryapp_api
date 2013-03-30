@@ -110,7 +110,7 @@ test("Items", function () {
 	var newItem2 = { date: "03/17/2013", price: 23, store_id: "456456456456456456456456", product_id: "567567567567567567567567", user_id: "678678678678678678678678" }
 	var newItem3 = { purchased: true, date: "03/10/2013", price: 34, store_id: "789789789789789789789789", product_id: "890890890890890890890890", user_id: "135135135135135135135135" }
 	var update1 = { price: 90, store_id: "a12a12a12a12a12a12a12a12", product_id: "b12b12b12b12b12b12b12b12", date: new Date().toISOString(), purchased: true }
-	var update2 = { price: 80, product_id: "c12c12c12c12c12c12c12c12" }
+	var update2 = { price: 80, product_id: "514e131e8aa545b269000042" }
 	var update3 = { item_id: "951951951951951951951951", user_id: "65c65c65c65c65c65c65c65c" }
 	
 	$.ajax({

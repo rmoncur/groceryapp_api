@@ -102,7 +102,7 @@ function randomTest() {
 							deepEqual(putResult, expectedUpdate, "Update product");
 							
 							$.ajax({
-								url: "/products/" + expectedUpdate.barcode,
+								url: "/products?barcode=" + expectedUpdate.barcode,
 								type: "get",
 								complete: function (res) {
 									if(res.status == 200) {
