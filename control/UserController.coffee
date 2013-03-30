@@ -1,8 +1,9 @@
 response = require('./ResponseMethods')()
 tokenGenerator = require('./TokenGenerator')()
 md5 = require('MD5')
+normalizer = require('./Normalizers')()
 
-module.exports = (User) =>
+module.exports = (User, Item) =>
 	errors =
 		USER_NOT_FOUND: 
 			error: true
@@ -84,6 +85,15 @@ module.exports = (User) =>
 			return response.error errors.USER_NOT_FOUND, res if not user?
 			return response.error errors.NOT_AUTHENTICATED, res if user.token != token
 			next user
+			
+	getItems: (req, res) =>
+		user_id = req.params.user_id
+		
+		Item.getItemsByUserId user_id, (err, items) =>
+			return res.json {error:true, message: err.message}, 500 if err?
+			results = []
+			results.push(normalizer.item(item)) for item in items
+			res.json results
 
 errors = ()->
 	USER_NOT_FOUND: 
