@@ -15,6 +15,7 @@ fix the deficiency.
 	* [Delete](#delete) - **DEL** /users/:user_id
 	
 	* Read - **GET** /users/:user_id/purchases (see Purchase Endpoints.md)
+	* [Read](#read-1) - **GET** /users/:user_id/items
 
 
 ## Users
@@ -99,3 +100,34 @@ fix the deficiency.
 	"message": "deleted"
 }
 ###### Error codes: <!-- TODO -->
+
+
+#### Read
+
+    GET /users/:user_id/items  Get all items that a user has reported
+
+###### Example Request:
+###### Expected Result:
+    200
+    [
+      {
+        "price": 43,
+        "store_id": "444444444444444444444444",
+        "item_id": "555555555555555555555555",
+        "product_id": "666666666666666666666666",
+        "user_id": "777777777777777777777777",
+        "date": "2013-03-30T14:53:38.530Z", 
+        "purchased": false
+      },
+      {
+        "price": 43,
+        "store_id": "444444444444444444444444",
+        "item_id": "999999999999999999999999",
+        "product_id": "888888888888888888888888",
+        "user_id": "777777777777777777777777",
+        "date": "2013-03-30T14:20:38.530Z", 
+        "purchased": true
+      }
+    ]
+###### Error codes: <!-- TODO -->
+

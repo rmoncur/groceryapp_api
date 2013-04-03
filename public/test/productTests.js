@@ -5,6 +5,8 @@ test("Products", function () {
 //	testCreateProducts();
 	randomizedTests();
 	testErrors();
+
+	
 });
 
 function removeSomeAttributes(product) {
@@ -40,7 +42,7 @@ function removeSomeAttributes(product) {
 
 function fillInMissingAttributes(partial, complete) {
 	for(var attr in complete) {
-		if(partial[attr] == null)
+		if(partial[attr] == null && attr != "price" && attr != "store_id")
 			partial[attr] = complete[attr];
 	}
 	
@@ -57,12 +59,15 @@ function randomizedTests() {
 function randomTest() {
 	var expected = {
 		name: randomString(0, 20),
-		barcode: randomNumberString(10, 13),
+		barcode: randomNumberString(10, 3),
 		description: randomString(0, 100),
 		size: {
 			amount: randomNumber(0, 200),
 			unit: randomString(0, 20)
-		}
+		},
+		price: randomNumber(0, 100),
+		user_id: randomString(24, 0),
+		store_id: randomString(24, 0)
 	}
 	
 	$.ajax({
@@ -70,12 +75,17 @@ function randomTest() {
 		type: 'post',
 		data: expected,
 		complete: function (res) {
-			if(res.status == 200) {
+			if(res.status == 201) {
 				var result = JSON.parse(res.responseText);
 				
 				//Add the product_id so that the deepEqual will work.
-				expected['product_id'] = result.product_id;
-				deepEqual(result, expected, "Create product");
+				expected['product_id'] = result.product.product_id;
+				
+				var newExpected = getProductItemCombo(expected);
+				newExpected.item['item_id'] = result.item.item_id;
+				newExpected.item['date'] = result.item.date;
+				
+				deepEqual(result, newExpected, "Create product");
 				
 				var productUpdate = removeSomeAttributes(expected);
 				
@@ -112,6 +122,26 @@ function randomTest() {
 			else error(res, "Create product failed");
 		}
 	});
+}
+
+function getProductItemCombo(submitted) {
+	return {
+		product: {
+			name: submitted.name,
+			barcode: submitted.barcode,
+			description: submitted.description,
+			size: submitted.size,
+			user_id: submitted.user_id,
+			product_id: submitted.product_id
+		},
+		item: {
+			price: submitted.price,
+			product_id: submitted.product_id,
+			store_id: submitted.store_id,
+			user_id: submitted.user_id,
+			purchased: false
+		}	
+	}
 }
 
 function testGetProducts() {
@@ -233,7 +263,7 @@ function testErrors() {
 		type: "post",
 		data: { barcode: randomBarcode, description: "First description" },
 		complete: function (res) {
-			if(res.status == 200) ok(true, "Created product");
+			if(res.status == 201) ok(true, "Created product");
 			else error(res, "Error creating product");
 			
 			var existingProduct = { barcode: randomBarcode, description: "A product that already exists and shouldn't be added" }
