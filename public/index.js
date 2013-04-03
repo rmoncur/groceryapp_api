@@ -182,7 +182,9 @@ module.controller('TodoController', function ($scope,$navigate,$waitDialog,$http
 	}
 	
 	//Selecting a store
-	$scope.selectStore = function(store){ $scope.selectedStore = store; $scope.$apply(); }
+	$scope.selectStore = function(store){
+		$scope.selectedStore = store; $scope.$apply(); 
+	}
 	
 	//Getting user purchases
 	$scope.getUserPurchases = function(){
@@ -200,7 +202,7 @@ module.controller('TodoController', function ($scope,$navigate,$waitDialog,$http
 		});
 	}
 	
-	// ---- UNDER ---- CONSTRUCTION ---- //
+	// ---- Data Submitting Functions ---- //
 	
 	//Lookup an item
 	$scope.readItem = function(){
@@ -263,33 +265,24 @@ module.controller('TodoController', function ($scope,$navigate,$waitDialog,$http
 	
 	//Reporting an item
 	$scope.reportItem = function(){
-		//$scope.createProduct();
 		
-		//Creating the product
-		if( $scope.report.product_id != null && $scope.report.product_id != ""){
-			var myproduct = {
-				"product_id":$scope.report.product_id
-			};	
-		} else {
-			var myproduct = {
-				barcode: $scope.report.barcode,
-				name: $scope.report.name,
-				description:$scope.report.description,
-			};	
+		//Deciding whether we need to create a product as well!
+		if( !$scope.report.product_id || $scope.report.product_id == null || $scope.report.product_id == "" ){
+			$scope.submitProduct();	
+			return;
 		}
 		
-		//Create new product and "report a price"
+		//Building the data
 		var mydata = {
-			product:myproduct,
+			product_id: $scope.report.product_id,
 			price:$scope.report.price,
-			purchased:$scope.report.purchased,				
 			store_id:$scope.selectedStore.store_id,
-			user_id:$scope.user.user_id,			
-			size:{
-				amount:$scope.report.size.amount,
-				units:$scope.report.size.units
-			}
-		}
+			user_id:$scope.user.user_id,
+			purchased: $scope.report.purchased,
+		};
+		
+		//Logging
+		console.log("Item Report Data - Presend",mydata);
 		
 		//Sending the request
 		$.ajax({
@@ -297,59 +290,40 @@ module.controller('TodoController', function ($scope,$navigate,$waitDialog,$http
 			data:JSON.stringify(mydata),
 			url: '/items',
 			success: function(data,ajax,xhr){
-				console.log("Success Creating Product",data,ajax,xhr);
-				$scope.report.product_id = data.product_id;
-				console.log("Report Data",$scope.report);
+				console.log("Success Creating Item",data);
 				
 				//Changing the status message
-				$scope.report.message = "New Product Created";
-				$scope.report.messageclass = "success";
-								
-				$scope.$apply(); //Applying Changes
-				
-				//$scope.createPurchase();
+				$scope.changeMessage("New Item Created","success");
+				$scope.resetReport();
 			},
 			error: function(){
-				$scope.report.message = "Error Creating Product";
-				$scope.report.messageclass = "error";
-				$scope.$apply(); //Applying Changes
-				//alert("Error Creating Product");	
+				//Changing the status message
+				$scope.changeMessage("Error creating item","error");				
 			}
 		});
 		
 	}
 	
-	//Reporting a new item
-	$scope.createProduct = function(){
-				
-		//Getting the data to create the product
-		/*var mydata = {			
-			barcode: $scope.report.barcode,       //required
-			name: $scope.report.name,             //optional
-			size: {
-				amount: $scope.report.size.amount,       //optional
-				units: $scope.report.size.units,       //optional
-			},
-			description: $scope.report.description//optional
-		};*/
+	//Creating a new product with a price report
+	$scope.submitProduct = function(){
 		
-		//Create new product and "report a price"
+		//Preparing the data
 		var mydata = {
 			barcode: $scope.report.barcode,
 			name: $scope.report.name,
-			purchased:$scope.report.purchased,			
-			price:$scope.report.price,	
-			store_id:$scope.selectedStore,
-			user_id:$scope.user.user_id,			
-			description:$scope.report.description,
 			size:{
 				amount:$scope.report.size.amount,
 				units:$scope.report.size.units
-			}
-		}
+			},
+			description:$scope.report.description,
+			
+			//Info for the price report
+			price:$scope.report.price, 
+			store_id:$scope.selectedStore.store_id,         
+		};
 		
-		console.log("Creating a Product",mydata);
-		//return false;
+		//Logging
+		console.log("Creating Product Data - Presend",mydata);
 		
 		//Sending the request
 		$.ajax({
@@ -359,62 +333,35 @@ module.controller('TodoController', function ($scope,$navigate,$waitDialog,$http
 			success: function(data,ajax,xhr){
 				console.log("Success Creating Product",data,ajax,xhr);
 				$scope.report.product_id = data.product_id;
-				console.log("Report Data",$scope.report);
 				
 				//Changing the status message
-				$scope.report.message = "New Product Created";
-				$scope.report.messageclass = "success";
-								
+				$scope.changeMessage("New Product Created","success");				
 				$scope.$apply(); //Applying Changes
-				
-				//$scope.createPurchase();
+
 			},
 			error: function(){
-				$scope.report.message = "Error Creating Product";
-				$scope.report.messageclass = "error";
-				//alert("Error Creating Product");	
+				$scope.changeMessage("Error Creating Product","error");	
 			}
 		});
-			
+		
 	}
 	
-	//Reporting a new item
-	$scope.createPurchase = function(){	
-		
-		var mydata = {
-			"user_id": $scope.user.user_id,      		//required
-			"store_id": $scope.selectedStore.store_id,	//required
-			"items": [{                         		//optional
-				"product_id": $scope.report.product_id, //required
-				"price": $scope.report.price            //required
-			}],
-			"total": $scope.report.price,                     //required
-			//"purchaseDate": "05/30/2012"        //optional, defaults to now
-		};
-		
-		console.log("Creating a Purchase",mydata);
-		
-		$.ajax({
-			type:"POST",
-			data:JSON.stringify(mydata),
-			url: '/purchases/',
-			success: function(data,ajax,xhr){
-				console.log("Success Creating Purchase",data,ajax,xhr);
-				$scope.report = {};				
-				
-				$scope.report.message = "New Purchase Reported";
-				$scope.report.messageclass = "success";
-				
-				$scope.$apply();
-			},
-			error: function(){
-				console.log('Error creating a purchase');
-				$scope.report.message = "Error creating a purchase";
-				$scope.report.messageclass = "error";				
-				$scope.$apply();
-			}
-		});
-			
+	//Resetting the report page
+	$scope.resetReport = function(){
+		$scope.report.product_id = null;
+		$scope.report = {
+			product_id:null,
+			img:"images/placeholder.gif",
+			size:{}		
+		}
+		$scope.$apply(); //Applying Changes
+	}
+	
+	//Changing the Message
+	$scope.changeMessage = function(msgtext,type){
+		$scope.report.message = msgtext;
+		$scope.report.messageclass = type;
+		$scope.$apply(); //Applying Changes
 	}
 	
 });
