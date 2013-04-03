@@ -67,7 +67,7 @@ module.controller('TodoController', function ($scope,$navigate,$waitDialog,$http
 	
 	//Registration/login data
 	$scope.regdata = {};
-	$scope.logindata = {"email":"robmonc@gmail.com","password":"password"};
+	$scope.logindata = {"email":"test@test.com","password":"test"};
 	
 	//Session data
 	$scope.location = {"lat":40.2387,"lon":-111.658};
