@@ -12,6 +12,7 @@ fix the deficiency.
 	* [Read](#read) - **GET** /products/:product_id
 	* [Read](#read-1) - **GET** /products
 	* [Update](#update) - **PUT** /products/:product_id
+    * [Search](#update) - **GET** /products?query=search_query
 
 
 ## Products
@@ -152,7 +153,7 @@ fix the deficiency.
     GET /products/?{parameters}
 
 ###### Example Request:
-    /products/?name=chicken
+    /products?query=chicken
     
 ###### Expected Result:
 	[
