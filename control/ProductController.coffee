@@ -83,7 +83,9 @@ module.exports = (Product, Item) =>
       return res.json err if err
       return response.error errors.PRODUCT_NOT_FOUND, res if not products
       results = []
+      prices = {high:2.45, low:1.45, avg:1.95, median:1.85, numscans:24}
       results.push(normalize.product(product)) for product in products
+      result.pricedata = prices for result in results
       res.json results
 
   getProduct: (req, res) =>
