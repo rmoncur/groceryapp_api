@@ -21,8 +21,11 @@ UserControllerModel = require './control/UserController'
 TagControllerModel = require './control/TagController'
 PurchaseControllerModel = require './control/PurchaseController'
 ProductControllerModel = require './control/ProductController'
-ItemControllerModel = require './control/ItemController'
+<<<<<<< HEAD
 SubscriberControllerModel = require './control/SubscriberController'
+=======
+ItemControllerModel = require './control/ItemController'
+>>>>>>> Items
 
 #This is the User model object.  It will handle putting stuff into the database
 #and will be used mainly by the UserController.
@@ -30,8 +33,11 @@ UserModel = require './model/User' #grab user file "object"
 TagModel = require './model/Tag'
 PurchaseModel = require './model/Purchase'
 ProductModel = require './model/Product'
-ItemModel = require './model/Item'
+<<<<<<< HEAD
 SubscriberModel = require './model/Subscriber'
+=======
+ItemModel = require './model/Item'
+>>>>>>> Items
 
 mongomate = require("mongomate")('mongodb://localhost')
 
@@ -41,27 +47,25 @@ DB = process.env.DB || 'mongodb://localhost:27017/grocery'
 #This is creating a connection to the database
 db = Mongoose.createConnection DB
 
-Item = ItemModel db
 User = UserModel db # create user class.
-UserController = UserControllerModel User, Item #pass class into controller so that we can use the class in the controller
+UserController = UserControllerModel User #pass class into controller so that we can use the class in the controller
 
 Tag = TagModel db
 TagController = TagControllerModel Tag
 
 Product = ProductModel db
-ProductController = ProductControllerModel Product, Item
+ProductController = ProductControllerModel Product
 
 Purchase = PurchaseModel db
 PurchaseController = PurchaseControllerModel Purchase
 
+Item = ItemModel db
 ItemController = ItemControllerModel Item
 
 StoresController = require('./control/StoresController')()
 
 Subscriber = SubscriberModel db
 SubscriberController = SubscriberControllerModel Subscriber
-
-AmazonUPCCotroller = require('./control/AmazonUPCController')()
 
 # This is the function that creates the server.
 # We will define endpoints and connect them up to 
@@ -100,7 +104,6 @@ exports.createServer = ->
     UserController.createUser req, res
 
   app.post '/users/login', (req, res) ->
-    console.log req.body
     UserController.login req, res
 
   #This is the put endpoint where users will be updated
@@ -161,9 +164,6 @@ exports.createServer = ->
 
   
   ### PRODUCTS ###
-  app.get '/products', (req, res) ->
-    ProductController.getProducts req, res
-
   app.get '/products/:barcode', (req, res) ->
     ProductController.getProduct req, res
 
@@ -197,9 +197,17 @@ exports.createServer = ->
     
   app.put '/items/:item_id', (req, res) ->
     ItemController.updateItem req, res
+  
+#  app.put '/items/:item_id', (req, res) ->
+#    PurchaseController.updateItem req, res
+#    
+#  app.delete '/items/:item_id', (req, res) ->
+#    PurchaseController.deleteItem req, res
+#    
+#  app.post '/purchases/:purchase_id/items', (req, res) ->
+#    PurchaseController.addItemToPurchase req, res
 
-  app.get '/users/:user_id/items', (req, res) ->
-    UserController.getItems req, res
+
 
   # STORES #
   app.get '/stores/nearby', (req, res)->
@@ -214,12 +222,6 @@ exports.createServer = ->
   app.get '/stores/my', (req, res)->
     StoreController.getMyStores req, res
 
-
-  app.get '/lookup/:upc', (req, res)->
-    AmazonUPCCotroller.getItemByBarcode req.params.upc, (err, result)->
-      return res.send err if err?
-      return res.send result if result
-      res.send {err: "Not found"}
 
 
   app.post '/event/register', (req, res)->

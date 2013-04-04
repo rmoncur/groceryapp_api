@@ -19,6 +19,9 @@ module.exports = (db) ->
 	ItemSchema.statics.getItemById = (item_id, cb) ->
     item_id = new ObjectId(item_id)
     @findOne("_id" : item_id).exec cb
+    
+  ItemSchema.statics.getItemsByUserId = (user_id, cb) ->
+  	@find("user_id" : user_id).exec cb
 
 	# This exports the schema
 	Item = db.model "Item", ItemSchema
