@@ -61,6 +61,8 @@ StoresController = require('./control/StoresController')()
 Subscriber = SubscriberModel db
 SubscriberController = SubscriberControllerModel Subscriber
 
+AmazonUPCCotroller = require('./control/AmazonUPCController')()
+
 # This is the function that creates the server.
 # We will define endpoints and connect them up to 
 # controllers here.
@@ -220,6 +222,12 @@ exports.createServer = ->
   app.get '/stores/my', (req, res)->
     StoreController.getMyStores req, res
 
+
+  app.get '/lookup/:upc', (req, res)->
+    AmazonUPCCotroller.getItemByBarcode req.params.upc, (err, result)->
+      return res.send err if err?
+      return res.send result if result
+      res.send {err: "Not found"}
 
 
   app.post '/event/register', (req, res)->

@@ -69,11 +69,12 @@ module.exports = (Product) =>
 
   getProducts: (req, res) =>
     name = ""
-    name = req.query.name if req?.query?.name
-    options = {name : new RegExp('^' + name)}
+    name = req.query.query if req?.query?.query
+    options = {}
+    options.description = new RegExp(name, 'i')
     Product.getProducts options, (err, products)=>
       return res.json err if err
-      return response.error errors.PRODUCT_NOT_FOUND, res
+      return response.error errors.PRODUCT_NOT_FOUND, res if not products
       results = []
       results.push(normalize(product)) for product in products
       res.json results
