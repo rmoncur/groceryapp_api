@@ -78,8 +78,7 @@ module.exports = (Product, Item) =>
   getProducts: (req, res) =>
     name = ""
     name = req.query.query if req?.query?.query
-    options = {}
-    options.description = new RegExp(name, 'i')
+    options = { $or: [ { description:new RegExp(name, 'i') }, { name:new RegExp(name, 'i') } ] }
     Product.getProducts options, (err, products)=>
       return res.json err if err
       return response.error errors.PRODUCT_NOT_FOUND, res if not products
