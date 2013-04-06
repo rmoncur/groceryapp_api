@@ -191,12 +191,31 @@
 		<ul data-role="listview" ng-show="reported.length">
 			<li style="text-align:center;">{{reported.length}} Items Reported</li>
 			<li ng-repeat="item in reported">
-				<a href="#">{{item.name}}
+				<a href="#item" ng-click="getItem('{{item.item_id}}')">{{item.name}}
 					<span class="ui-li-count">${{item.price}}</span>
 				</a>
 			</li>
 		</ul>		
 		<div id="nopurchases" ng-hide="reported.length">No Items Reported</div>
+	</div>
+	<div data-role="footer">		
+		<div data-role="controlgroup" data-type="horizontal" >
+			<a data-role="button" href="#monthleaderboard">Lead</a>
+			<a data-role="button" href="#scan">Scan</a>	
+			<a data-role="button" href="#dashboard">Dash</a>
+			<a data-role="button" href="#inputitem">Report</a>	
+			<a data-role="button" href="#lookup">Lookup</a>			
+		</div>		
+	</div>
+</div>
+
+<!-- Show item #item -->
+<div data-role="page" id="item" data-add-back-btn="true">
+	<div data-role="header">
+		<h1>Item</h1>
+	</div>
+	<div data-role="content">
+		{{item}}
 	</div>
 	<div data-role="footer">		
 		<div data-role="controlgroup" data-type="horizontal" >

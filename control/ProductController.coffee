@@ -27,7 +27,7 @@ module.exports = (Product, Item) =>
 #    barcode = "0#{barcode}" if barcode?.length is 12
     
     Product.getProductById product_id, (err, product) =>
-      return res.json {error: true, message: err.message}, 500 if err?
+      return res.json {error: true, message: err}, 500 if err?
       return response.error errors.PRODUCT_NOT_FOUND, res if not product?
       product.name = name if name?
       product.description = description if description?
@@ -35,7 +35,7 @@ module.exports = (Product, Item) =>
       product.barcode = barcode if barcode?
       product.lastUpdate = new Date
       product.save (err) ->
-        return res.json {error: true, message: err.message}, 500 if err?
+        return res.json {error: true, message: err}, 500 if err?
       
         res.json normalize.product(product)
 
@@ -85,9 +85,24 @@ module.exports = (Product, Item) =>
       results = []
       results.push(normalize.product(product)) for product in products
       res.json results
+      
 
   getProduct: (req, res) =>
-    barcode = req.params.barcode
+    product_id = req.params.product_id
+
+    Product.getProductById product_id, (err, product) =>
+      return res.json {error:true, message: err.message}, 500 if err?
+      return response.error errors.PRODUCT_NOT_FOUND, res if not product?
+      
+      Item.getMostRecentItemsByProductId product_id, (err, items) =>
+        result = []
+        result.push(normalize.item(item)) for item in items
+        
+        res.json { product: normalize.product(product), items: result }
+        
+
+  getProductByBarcode: (req, res) =>
+    barcode = req.query.barcode || req.params.barcode
     #We will store all of our barcodes as 13 digit codes so if they are only 12 add the leading 0
 #    barcode = "0#{barcode}" if barcode.length is 12
     Product.getProduct barcode, (err, product) =>
@@ -115,13 +130,13 @@ module.exports = (Product, Item) =>
             product = new Product {
               name: result.itemname,
               #If we requested a 12 digit number we'll convert it to a 13 digit
-              barcode: if result.number.length is 12 then "0#{result.number}" else result.number,
+              barcode: result.number,
               description: result.description
             }
             product.save()
-          else if barcode.length is 13
-            #If we didn't find the 13 digit code at upcdatabase.org then we will see if they have a matching 12 digit code.
-            return findProduct barcode.substring(1), res
+#          else if barcode.length is 13
+#            #If we didn't find the 13 digit code at upcdatabase.org then we will see if they have a matching 12 digit code.
+#            return findProduct barcode.substring(1), res
           else
             return response.error errors.PRODUCT_NOT_FOUND, res
 

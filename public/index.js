@@ -95,6 +95,8 @@ module.controller('TodoController', function ($scope,$navigate,$waitDialog,$http
 		numReports:32,
 	};
 	
+	$scope.item = {};
+	
 	// ----- Methods ----- //
 	
 	$scope.start = function(){
@@ -193,10 +195,27 @@ module.controller('TodoController', function ($scope,$navigate,$waitDialog,$http
 			type:"GET",
 			processData: true,
 			data:{},
-			url: '/users/' + $scope.user.user_id + "/purchases",
+			url: '/users/' + $scope.user.user_id + "/items",
 			success: function(data,ajax,xhr){
 				console.log("Success User Purchases",data,ajax,xhr);
 				$scope.user.purchases = data;
+				$scope.user.itemsreported = data.length;
+				$scope.reported = $scope.reported.concat(data);
+				$scope.$apply();
+			}						
+		});
+	}
+	
+	$scope.getItem = function(item_id){
+		
+		$.ajax({
+			type:"GET",
+			processData: true,
+			data:{},
+			url: '/items/' + item_id,
+			success: function(data,ajax,xhr){
+				console.log("Success Item",data,ajax,xhr);
+				$scope.item = data;
 				$scope.$apply();
 			}						
 		});
@@ -207,10 +226,14 @@ module.controller('TodoController', function ($scope,$navigate,$waitDialog,$http
 	//Lookup an item
 	$scope.readItem = function(){
 		
-		if( $scope.report.barcode.length != 8 && $scope.report.barcode.length != 12 ){ 	
-			$scope.report.message = "UPC must be 8 or 12 digits";
-			$scope.report.messageclass = "warning";
-			$scope.report.barcodelength = $scope.report.barcode.length
+//		if( $scope.report.barcode.length != 8 && $scope.report.barcode.length != 12 ){ 	
+//			$scope.report.message = "UPC must be 8 or 12 digits";
+//			$scope.report.messageclass = "warning";
+//			$scope.report.barcodelength = $scope.report.barcode.length
+//			return;
+//		}
+
+		if($scope.report.barcode.length < 6) {
 			return;
 		}
 		
@@ -220,7 +243,7 @@ module.controller('TodoController', function ($scope,$navigate,$waitDialog,$http
 			type:"GET",
 			processData: true,
 			data:{},
-			url: '/products/' + $scope.report.barcode,			
+			url: '/products?barcode=' + $scope.report.barcode,			
 			beforeSend: function(){
 				$scope.report.message = "Searching for product";
 				$scope.report.messageclass = "info";								
@@ -316,7 +339,7 @@ module.controller('TodoController', function ($scope,$navigate,$waitDialog,$http
 				units:$scope.report.size.units
 			},
 			description:$scope.report.description,
-			
+			user_id: $scope.user.user_id,
 			//Info for the price report
 			price:$scope.report.price, 
 			store_id:$scope.selectedStore.store_id,         
